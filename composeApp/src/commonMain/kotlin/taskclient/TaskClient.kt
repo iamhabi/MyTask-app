@@ -6,9 +6,7 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import task.TaskItem
@@ -26,7 +24,7 @@ object TaskClient {
     private val client: HttpClient = HttpClient {
         defaultRequest { url(BASE_URL) }
     }
-    
+
     private fun getAESKey(): SecretKey {
         return SecretKeySpec(TaskClientKey.KEY.toByteArray(), "AES")
     }
@@ -118,8 +116,11 @@ object TaskClient {
         }
     }
 
-    fun getTasks(groupId: Long, callback: (TaskItem) -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
+    private var jobGetTasks: Job? = null
+
+    fun getTasks(groupId: Long, callback: (List<TaskItem>) -> Unit) {
+        jobGetTasks?.cancel()
+        jobGetTasks = CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = client.get(BASE_TASK) {
                     parameter("group_id", groupId)
@@ -129,9 +130,13 @@ object TaskClient {
 
                 val tasks = Json.decodeFromString<List<EncryptedTaskItem>>(body)
 
+                val descryptedTasks = mutableListOf<TaskItem>()
+
                 for (task in tasks) {
-                    callback(task.decrypt(getAESKey()))
+                    descryptedTasks.add(task.decrypt(getAESKey()))
                 }
+
+                callback(descryptedTasks)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import group.GroupViewBigLayout
 import group.GroupViewSmallLayout
@@ -48,8 +47,8 @@ fun App() {
 
         tasks.clear()
 
-        TaskClient.getTasks(groupId) { task ->
-            tasks.add(task)
+        TaskClient.getTasks(groupId) {
+            tasks.addAll(it)
         }
 
         isOpenDetail.value = false
