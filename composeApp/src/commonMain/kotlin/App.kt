@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import group.GroupViewBigLayout
 import group.GroupViewSmallLayout
@@ -57,6 +58,8 @@ fun App() {
     if (taskGroups.size == 0) {
         TaskClient.getGroups { group ->
             taskGroups.add(group)
+
+            selectedGroupIndex.value = 0
         }
     }
 
