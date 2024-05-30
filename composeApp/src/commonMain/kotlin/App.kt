@@ -165,7 +165,6 @@ fun App() {
                 modifier = Modifier
                     .background(Color.White)
                     .fillMaxWidth()
-                    .padding(16.dp)
             ) {
                 GroupViewSmallLayout(
                     taskGroups = taskGroups,

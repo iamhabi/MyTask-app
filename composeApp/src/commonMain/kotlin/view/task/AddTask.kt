@@ -45,7 +45,7 @@ fun AddTask(
             modifier = Modifier
                 .weight(1F)
                 .onKeyUp(Key.Enter, action = { createTask(input.value) }),
-            label = { Text("Input") },
+            label = { Text("New task") },
             singleLine = true
         )
 

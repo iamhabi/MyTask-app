@@ -43,9 +43,9 @@ fun AddTaskGroup(
             value = input.value,
             onValueChange = { input.value = it },
             modifier = Modifier
-                .weight(3F)
+                .weight(1F)
                 .onKeyUp(Key.Enter, action = { createGroup(input.value) }),
-            label = { Text("New Group") },
+            label = { Text("New group") },
             singleLine = true
         )
 
@@ -53,7 +53,6 @@ fun AddTaskGroup(
         
         IconButton(
             enabled = input.value != "",
-            modifier = Modifier.weight(1F),
             onClick = { createGroup(input.value) },
             content = {
                 Icon(
