@@ -6,7 +6,10 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import task.TaskItem
@@ -29,18 +32,12 @@ object TaskClient {
         return SecretKeySpec(TaskClientKey.KEY.toByteArray(), "AES")
     }
 
-    fun getGroups(callback: (TaskGroup) -> Unit) {
+    fun getGroups(callback: (List<TaskGroup>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = client.get(BASE_GROUP)
 
-                val body = response.bodyAsText()
-
-                val groups: List<TaskGroup> = Json.decodeFromString(body)
-
-                for (group in groups) {
-                    callback(group.decrypt(getAESKey()))
-                }
+                callback(response.groups())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -126,17 +123,7 @@ object TaskClient {
                     parameter("group_id", groupId)
                 }
 
-                val body = response.bodyAsText()
-
-                val tasks = Json.decodeFromString<List<EncryptedTaskItem>>(body)
-
-                val descryptedTasks = mutableListOf<TaskItem>()
-
-                for (task in tasks) {
-                    descryptedTasks.add(task.decrypt(getAESKey()))
-                }
-
-                callback(descryptedTasks)
+                callback(response.tasks())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -251,5 +238,33 @@ object TaskClient {
                 e.printStackTrace()
             }
         }
+    }
+
+    private suspend fun HttpResponse.groups(): List<TaskGroup> {
+        val body = bodyAsText()
+
+        val groups = Json.decodeFromString<List<TaskGroup>>(body)
+
+        val descryptedGroups = mutableListOf<TaskGroup>()
+
+        for (group in groups) {
+            descryptedGroups.add(group.decrypt(getAESKey()))
+        }
+
+        return descryptedGroups
+    }
+
+    private suspend fun HttpResponse.tasks(): List<TaskItem> {
+        val body = bodyAsText()
+
+        val tasks = Json.decodeFromString<List<EncryptedTaskItem>>(body)
+
+        val descryptedTasks = mutableListOf<TaskItem>()
+
+        for (task in tasks) {
+            descryptedTasks.add(task.decrypt(getAESKey()))
+        }
+
+        return descryptedTasks
     }
 }

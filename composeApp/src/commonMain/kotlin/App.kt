@@ -2,7 +2,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -17,9 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import group.GroupViewBigLayout
 import group.GroupViewSmallLayout
@@ -38,13 +34,13 @@ fun App() {
 
     val selectedGroupIndex = remember { mutableStateOf(-1) }
 
-    val showGroup = remember { mutableStateOf(false) }
+    val isShowGroup = remember { mutableStateOf(false) }
 
     val detailTaskIndex = remember { mutableStateOf(-1) }
     val isOpenDetail = remember { mutableStateOf(false) }
 
     if (selectedGroupIndex.value != -1) {
-        showGroup.value = false
+        isShowGroup.value = false
     } else {
         tasks.clear()
     }
@@ -62,8 +58,8 @@ fun App() {
     }
 
     if (taskGroups.size == 0) {
-        TaskClient.getGroups { group ->
-            taskGroups.add(group)
+        TaskClient.getGroups { groups ->
+            taskGroups.addAll(groups)
 
             selectedGroupIndex.value = 0
         }
@@ -73,7 +69,7 @@ fun App() {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .disableChilds(showGroup.value)
+                .disableChilds(isShowGroup.value)
         ) {
             val isLarge = maxWidth >= 600.dp
 
@@ -91,7 +87,7 @@ fun App() {
                     if (!isLarge) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(
-                                onClick = { showGroup.value = true },
+                                onClick = { isShowGroup.value = true },
                                 content = {
                                     Icon(
                                         imageVector = Icons.Default.Menu,
@@ -173,7 +169,7 @@ fun App() {
         }
 
         AnimatedVisibility(
-            visible = showGroup.value,
+            visible = isShowGroup.value,
             enter = expandHorizontally(),
             exit = shrinkHorizontally()
         ) {
@@ -185,7 +181,7 @@ fun App() {
                 GroupViewSmallLayout(
                     taskGroups = taskGroups,
                     selectedGroupIndex = selectedGroupIndex,
-                    onClose = { showGroup.value = false }
+                    onClose = { isShowGroup.value = false }
                 )
             }
         }
