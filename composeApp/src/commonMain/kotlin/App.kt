@@ -1,3 +1,6 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -29,11 +32,11 @@ fun App() {
     val taskGroups = remember { mutableStateListOf<TaskGroup>() }
     val tasks = remember { mutableStateListOf<TaskItem>() }
 
-    val selectedGroupIndex = remember { mutableStateOf<Int>(-1) }
+    val selectedGroupIndex = remember { mutableStateOf(-1) }
 
     val showGroup = remember { mutableStateOf(false) }
 
-    val detailTaskIndex = remember { mutableStateOf<Int>(-1) }
+    val detailTaskIndex = remember { mutableStateOf(-1) }
     val isOpenDetail = remember { mutableStateOf(false) }
 
     if (selectedGroupIndex.value != -1) {
@@ -63,7 +66,10 @@ fun App() {
     }
 
     MaterialTheme {
-        BoxWithConstraints(Modifier.fillMaxWidth()) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
             val isLarge = maxWidth >= 600.dp
 
             Row {
@@ -74,7 +80,8 @@ fun App() {
                 }
 
                 Column(
-                    modifier = Modifier.weight(7F)
+                    modifier = Modifier
+                        .weight(7F)
                 ) {
                     if (!isLarge) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -159,10 +166,12 @@ fun App() {
                 )
             }
         }
-    }
 
-    MaterialTheme {
-        if (showGroup.value) {
+        AnimatedVisibility(
+            visible = showGroup.value,
+            enter = expandHorizontally(),
+            exit = shrinkHorizontally()
+        ) {
             Box(
                 modifier = Modifier
                     .background(Color.White)
