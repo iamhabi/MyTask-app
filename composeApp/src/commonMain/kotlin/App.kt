@@ -9,10 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import group.GroupViewBigLayout
 import group.GroupViewSmallLayout
 import group.TaskGroup
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import task.AddTask
 import task.TaskDetail
@@ -39,6 +37,14 @@ fun App() {
     val detailTaskIndex = remember { mutableStateOf(-1) }
     val isOpenDetail = remember { mutableStateOf(false) }
 
+    LaunchedEffect(Dispatchers.IO) {
+        TaskClient.getGroups { groups ->
+            taskGroups.addAll(groups)
+
+            selectedGroupIndex.value = 0
+        }
+    }
+
     if (selectedGroupIndex.value != -1) {
         isShowGroup.value = false
     } else {
@@ -55,14 +61,6 @@ fun App() {
         }
 
         isOpenDetail.value = false
-    }
-
-    if (taskGroups.size == 0) {
-        TaskClient.getGroups { groups ->
-            taskGroups.addAll(groups)
-
-            selectedGroupIndex.value = 0
-        }
     }
 
     MaterialTheme {
