@@ -9,10 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,23 +21,27 @@ import group.TaskGroup
 @Composable
 fun TaskGroupList(
     taskGroups: SnapshotStateList<TaskGroup>,
-    selectedGroupIndex: MutableState<Int>
+    onGroupSelected: (Int) -> Unit
 ) {
     val listState = rememberLazyListState()
+
+    var selectedGroupIndex by remember { mutableStateOf(-1) }
 
     LazyColumn(state = listState) {
         itemsIndexed(taskGroups) { index, taskGroup ->
             Column(
                 modifier = Modifier
                     .background(
-                        if(selectedGroupIndex.value == index) {
+                        if(selectedGroupIndex == index) {
                             Color.Blue.copy(alpha = 0.2F)
                         } else {
                             Color.Transparent
                         }
                     )
                     .clickable {
-                        selectedGroupIndex.value = index
+                        selectedGroupIndex = index
+
+                        onGroupSelected(index)
                     }
             ) {
                 TaskGroupItem(
@@ -51,8 +52,8 @@ fun TaskGroupList(
                             onSuccess = {
                                 taskGroups.remove(taskGroup)
 
-                                if (index == selectedGroupIndex.value) {
-                                    selectedGroupIndex.value = -1
+                                if (index == selectedGroupIndex) {
+                                    selectedGroupIndex = -1
                                 }
                             },
                             onFailed = {
