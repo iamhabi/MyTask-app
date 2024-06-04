@@ -1,5 +1,5 @@
 interface MyPrefImpl {
-    val PREFRENCES_NAME: String
+    val PREFERENCES_NAME: String
 
     fun save(key: String, value: String)
     fun save(key: String, value: Boolean)

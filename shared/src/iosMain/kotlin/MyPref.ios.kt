@@ -1,7 +1,7 @@
 import platform.Foundation.NSUserDefaults
 
 class IOSPref: MyPrefImpl {
-    override val PREFRENCES_NAME: String
+    override val PREFERENCES_NAME: String
         get() = "com.iamhabi.mytask"
 
     override fun save(key: String, value: String) {

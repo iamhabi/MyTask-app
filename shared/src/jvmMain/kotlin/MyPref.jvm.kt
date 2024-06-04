@@ -1,10 +1,10 @@
 import java.util.prefs.Preferences
 
 class JVMPref: MyPrefImpl {
-    override val PREFRENCES_NAME: String
-        get() = "com.iamhabi.mypreferences"
+    override val PREFERENCES_NAME: String
+        get() = "com.iamhabi.mytask"
 
-    private fun getPref() = Preferences.userRoot().node(PREFRENCES_NAME)
+    private fun getPref() = Preferences.userRoot().node(PREFERENCES_NAME)
     
     override fun save(key: String, value: String) {
         getPref().put(key, value)

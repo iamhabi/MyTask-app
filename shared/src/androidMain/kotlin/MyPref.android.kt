@@ -4,13 +4,13 @@ import android.content.SharedPreferences
 class AndroidPref(
     private val myContext: MyContext?
 ): MyPrefImpl {
-    override val PREFRENCES_NAME: String
-        get() = "com.iamhabi.mypreferences"
+    override val PREFERENCES_NAME: String
+        get() = "com.iamhabi.mytask"
     
     private fun getPref(): SharedPreferences? {
         myContext ?: return null
         
-        return myContext.getSharedPreferences(PREFRENCES_NAME, Context.MODE_PRIVATE)
+        return myContext.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     }
     
     private fun getEditor(): SharedPreferences.Editor? {
