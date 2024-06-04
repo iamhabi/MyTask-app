@@ -6,6 +6,6 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "MyTask",
     ) {
-        App()
+        App(MyPreferences())
     }
 }

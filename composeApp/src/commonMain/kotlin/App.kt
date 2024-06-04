@@ -7,7 +7,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App() {
+fun App(
+    myPreferences: MyPreferences? = null
+) {
+    MyPref.myPref = myPreferences
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -20,4 +24,13 @@ fun App() {
             SmallApp()
         }
     }
+}
+
+object MyPref {
+    var myPref: MyPreferences? = null
+
+    const val PrefSortByTitle = "sort_by_title"
+    const val PrefSortByDueDate = "sort_by_due_date"
+    const val PrefSortByDoneState = "sort_by_done_state"
+    const val PrefHideDoneTask = "hide_done_task"
 }

@@ -1,5 +1,6 @@
 package view.task
 
+import MyPref
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
@@ -66,6 +67,8 @@ fun TaskListTopLayout(
                                 checked = isHideDoneTask.value,
                                 onCheckedChange = {
                                     isHideDoneTask.value = it
+
+                                    MyPref.myPref?.save(MyPref.PrefHideDoneTask, it)
                                 }
                             )
                             
@@ -94,6 +97,8 @@ fun SelectSortMethod(
                 checked = isSortByTitle.value,
                 onCheckedChange = {
                     isSortByTitle.value = it
+
+                    MyPref.myPref?.save(MyPref.PrefSortByTitle, it)
                 }
             )
 
@@ -107,6 +112,8 @@ fun SelectSortMethod(
                 checked = isSortByDueDate.value,
                 onCheckedChange = {
                     isSortByDueDate.value = it
+
+                    MyPref.myPref?.save(MyPref.PrefSortByDueDate, it)
                 }
             )
 
@@ -120,6 +127,8 @@ fun SelectSortMethod(
                 checked = isSortByDoneState.value,
                 onCheckedChange = {
                     isSortByDoneState.value = it
+
+                    MyPref.myPref?.save(MyPref.PrefSortByDoneState, it)
                 }
             )
 
