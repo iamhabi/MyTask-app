@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -16,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import onKeyUp
 
@@ -44,9 +47,22 @@ fun AddTask(
             onValueChange = { input.value = it },
             modifier = Modifier
                 .weight(1F)
-                .onKeyUp(Key.Enter, action = { createTask(input.value) }),
-            label = { Text("New task") },
-            singleLine = true
+                .onKeyUp(
+                    key = Key.Enter,
+                    action = {
+                        createTask(input.value)
+                    }
+                ),
+            label = {
+                Text("New task")
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions {
+                createTask(input.value)
+            }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
