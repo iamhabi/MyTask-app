@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import group.AddTaskGroup
 import group.TaskGroup
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import task.AddTask
 import task.TaskDetail
@@ -42,12 +41,6 @@ fun SmallApp() {
     var detailTaskIndex by remember { mutableStateOf(-1) }
     var isOpenDetail by remember { mutableStateOf(false) }
     
-    LaunchedEffect(Dispatchers.IO) {
-        TaskClient.getGroups { groups ->
-            taskGroups.addAll(groups)
-        }
-    }
-
     MaterialTheme {
         BoxWithConstraints(
             modifier = Modifier
