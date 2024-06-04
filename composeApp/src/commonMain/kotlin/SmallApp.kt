@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +19,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import group.AddTaskGroup
 import group.TaskGroup
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import task.AddTask
 import task.TaskDetail
@@ -31,14 +31,20 @@ enum class DragValue { Start, End }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SmallApp(
-    taskGroups: SnapshotStateList<TaskGroup>,
-    selectedGroupIndex: MutableState<Int>,
-    taskItems: SnapshotStateList<TaskItem>
-) {
+fun SmallApp() {
+    val taskGroups = remember { mutableStateListOf<TaskGroup>() }
+    val taskItems = remember { mutableStateListOf<TaskItem>() }
+
+    var selectedGroupIndex by remember { mutableStateOf(-1) }
+
     var detailTaskIndex by remember { mutableStateOf(-1) }
     var isOpenDetail by remember { mutableStateOf(false) }
     
+    LaunchedEffect(Dispatchers.IO) {
+        TaskClient.getGroups { groups ->
+            taskGroups.addAll(groups)
+        }
+    }
     MaterialTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -112,9 +118,9 @@ fun SmallApp(
                             )
                         }
 
-                        if (selectedGroupIndex.value >= 0) {
+                        if (selectedGroupIndex >= 0) {
                             Text(
-                                text = taskGroups[selectedGroupIndex.value].title,
+                                text = taskGroups[selectedGroupIndex].title,
                                 maxLines = 1
                             )
                         }
@@ -135,7 +141,7 @@ fun SmallApp(
                     }
                     
                     AddTask { title ->
-                        val groupId = taskGroups[selectedGroupIndex.value].id
+                        val groupId = taskGroups[selectedGroupIndex].id
                         
                         TaskClient.createTask(
                             groupId = groupId,
@@ -191,7 +197,15 @@ fun SmallApp(
                         TaskGroupList(
                             taskGroups = taskGroups,
                             onGroupSelected = { index ->
-                                selectedGroupIndex.value = index
+                                selectedGroupIndex = index
+
+                                val groupId = taskGroups[index].id
+
+                                taskItems.clear()
+
+                                TaskClient.getTasks(groupId) {
+                                    taskItems.addAll(it)
+                                }
 
                                 close()
                             }
