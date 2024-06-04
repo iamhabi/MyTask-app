@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -27,7 +26,6 @@ fun AddTask(
 ) {
     val input = remember { mutableStateOf("") }
 
-    val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     fun createTask(title: String) {
@@ -39,7 +37,6 @@ fun AddTask(
 
         input.value = ""
 
-        focusManager.clearFocus(force = true)
         keyboardController?.hide()
     }
 
