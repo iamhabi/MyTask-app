@@ -3,6 +3,7 @@ package data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import task.TaskItem
+import taskclient.TaskClientKey
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
@@ -30,7 +31,7 @@ data class EncryptedTaskItem(
     fun decrypt(secretKey: SecretKey): TaskItem {
         val cipher = Cipher.getInstance(TaskClient.CIPHER_TRANSFORMATION)
 
-        val ivParameterSpec = IvParameterSpec(ByteArray(16))
+        val ivParameterSpec = IvParameterSpec(ByteArray(TaskClientKey.KEY.length))
 
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec)
         
