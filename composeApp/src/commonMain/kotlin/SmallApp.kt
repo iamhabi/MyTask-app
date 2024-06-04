@@ -1,5 +1,7 @@
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
@@ -45,6 +47,7 @@ fun SmallApp() {
             taskGroups.addAll(groups)
         }
     }
+
     MaterialTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -95,6 +98,7 @@ fun SmallApp() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .disableChilds(isOpenDetail)
                     .anchoredDraggable(
                         state = anchoredDraggableState,
                         orientation = Orientation.Horizontal
@@ -230,7 +234,9 @@ fun SmallApp() {
             }
             
             AnimatedVisibility(
-                visible = isOpenDetail
+                visible = isOpenDetail,
+                enter = scaleIn(),
+                exit = scaleOut()
             ) {
                 val detailTaskItem = taskItems[detailTaskIndex].copy()
                 

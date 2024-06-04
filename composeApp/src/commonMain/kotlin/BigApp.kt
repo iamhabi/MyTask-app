@@ -1,4 +1,6 @@
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -38,6 +40,7 @@ fun BigApp() {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
+                    .disableChilds(isOpenDetail)
             ) {
                 Column(
                     modifier = Modifier
@@ -122,7 +125,9 @@ fun BigApp() {
             }
             
             AnimatedVisibility(
-                visible = isOpenDetail
+                visible = isOpenDetail,
+                enter = scaleIn(),
+                exit = scaleOut()
             ) {
                 val detailTaskItem = taskItems[detailTaskIndex].copy()
                 

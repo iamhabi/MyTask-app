@@ -20,14 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import toDateTime
 
 @Composable
 fun TaskDetail(
     taskItem: TaskItem,
     onUpdateItem: (TaskItem) -> Unit,
-    onDeleteItem: () -> Unit
+    onDeleteItem: () -> Unit,
 ) {
     val showDatePicker = remember { mutableStateOf(false) }
 
@@ -55,105 +54,100 @@ fun TaskDetail(
         mutableStateOf(taskItem.dueDate)
     }
 
-    Dialog(
-        onDismissRequest = {
-            val updatedItem = taskItem.copy(
-                title = title.value.text,
-                description = description.value.text,
-                dueDate = dueDate.value
+    Column(
+        modifier = Modifier
+            .background(color = Color.White)
+            .padding(8.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = {
+                    val updatedItem = taskItem.copy(
+                        title = title.value.text,
+                        description = description.value.text,
+                        dueDate = dueDate.value
+                    )
+
+                    onUpdateItem(updatedItem)
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Close detail"
+                    )
+                }
             )
 
-            onUpdateItem(updatedItem)
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .background(color = Color.White)
-                    .padding(8.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = {
-                            val updatedItem = taskItem.copy(
-                                title = title.value.text,
-                                description = description.value.text,
-                                dueDate = dueDate.value
-                            )
+            Spacer(Modifier.weight(1F))
 
-                            onUpdateItem(updatedItem)
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = "Close detail"
-                            )
-                        }
-                    )
-
-                    Spacer(Modifier.weight(1F))
-
-                    IconButton(
-                        onClick = {
-                            onDeleteItem()
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete task",
-                                tint = Color.Red
-                            )
-                        }
+            IconButton(
+                onClick = {
+                    onDeleteItem()
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete task",
+                        tint = Color.Red
                     )
                 }
-
-                OutlinedTextField(
-                    value = title.value,
-                    onValueChange = {
-                        title.value = it
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Title") },
-                    singleLine = true
-                )
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Due Date")
-
-                    Spacer(Modifier.weight(1F))
-
-                    TextButton(
-                        onClick = { showDatePicker.value = true },
-                        content = {
-                            val dueDateText = if (dueDate.value == 0L) {
-                                "Not Setted"
-                            } else {
-                                dueDate.value.toDateTime()
-                            }
-
-                            Text(dueDateText)
-                        }
-                    )
-                }
-
-                OutlinedTextField(
-                    value = description.value,
-                    onValueChange = {
-                        description.value = it
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1F),
-                    label = { Text("Description") }
-                )
-            }
-
-            if (showDatePicker.value) {
-                DueDatePicker(showDatePicker) { selectedDueDate ->
-                    dueDate.value = selectedDueDate
-                }
-            }
+            )
         }
-    )
+
+        OutlinedTextField(
+            value = title.value,
+            onValueChange = {
+                title.value = it
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text("Title")
+            },
+            singleLine = true
+        )
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Due Date")
+
+            Spacer(Modifier.weight(1F))
+
+            TextButton(
+                onClick = {
+                    showDatePicker.value = true
+                },
+                content = {
+                    val dueDateText = if (dueDate.value == 0L) {
+                        "Not Setted"
+                    } else {
+                        dueDate.value.toDateTime()
+                    }
+
+                    Text(dueDateText)
+                }
+            )
+        }
+
+        OutlinedTextField(
+            value = description.value,
+            onValueChange = {
+                description.value = it
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1F),
+            label = {
+                Text("Description")
+            }
+        )
+    }
+
+    if (showDatePicker.value) {
+        DueDatePicker(showDatePicker) { selectedDueDate ->
+            dueDate.value = selectedDueDate
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
