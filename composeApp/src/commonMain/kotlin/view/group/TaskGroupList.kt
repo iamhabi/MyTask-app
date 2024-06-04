@@ -38,6 +38,10 @@ fun TaskGroupList(
             currentGroupIndex = taskGroups.indexOfFirst {
                 it.id == lastGroupId
             }
+
+            if (currentGroupIndex != -1) {
+                onGroupSelected(taskGroups[currentGroupIndex])
+            }
         }
     }
 
