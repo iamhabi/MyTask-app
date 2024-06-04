@@ -21,27 +21,28 @@ import group.TaskGroup
 @Composable
 fun TaskGroupList(
     taskGroups: SnapshotStateList<TaskGroup>,
-    onGroupSelected: (Int) -> Unit
+    onGroupSelected: (TaskGroup) -> Unit,
+    onGroupDeleted: (TaskGroup) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
-    var selectedGroupIndex by remember { mutableStateOf(-1) }
+    var currentGroupIndex by remember { mutableStateOf(-1) }
 
     LazyColumn(state = listState) {
         itemsIndexed(taskGroups) { index, taskGroup ->
             Column(
                 modifier = Modifier
                     .background(
-                        if(selectedGroupIndex == index) {
+                        if (currentGroupIndex == index) {
                             Color.Blue.copy(alpha = 0.2F)
                         } else {
                             Color.Transparent
                         }
                     )
                     .clickable {
-                        selectedGroupIndex = index
+                        currentGroupIndex = index
 
-                        onGroupSelected(index)
+                        onGroupSelected(taskGroup)
                     }
             ) {
                 TaskGroupItem(
@@ -50,10 +51,16 @@ fun TaskGroupList(
                         TaskClient.deleteGroup(
                             taskGroup,
                             onSuccess = {
+                                onGroupDeleted(taskGroup)
+
+                                val currentGroup = taskGroups[currentGroupIndex]
+
                                 taskGroups.remove(taskGroup)
 
-                                if (index == selectedGroupIndex) {
-                                    selectedGroupIndex = -1
+                                currentGroupIndex = if (index == currentGroupIndex) {
+                                    -1
+                                } else {
+                                    taskGroups.indexOf(currentGroup)
                                 }
                             },
                             onFailed = {
