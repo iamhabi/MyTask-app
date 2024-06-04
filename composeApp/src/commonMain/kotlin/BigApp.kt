@@ -25,12 +25,6 @@ fun BigApp() {
 
     var detailTaskIndex by remember { mutableStateOf(-1) }
     var isOpenDetail by remember { mutableStateOf(false) }
-    
-    LaunchedEffect(Dispatchers.IO) {
-        TaskClient.getGroups { groups ->
-            taskGroups.addAll(groups)
-        }
-    }
 
     MaterialTheme {
         BoxWithConstraints(

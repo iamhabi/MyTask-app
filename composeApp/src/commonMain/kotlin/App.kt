@@ -33,4 +33,6 @@ object MyPref {
     const val PrefSortByDueDate = "sort_by_due_date"
     const val PrefSortByDoneState = "sort_by_done_state"
     const val PrefHideDoneTask = "hide_done_task"
+
+    const val PrefLastShowGroup = "last_group"
 }

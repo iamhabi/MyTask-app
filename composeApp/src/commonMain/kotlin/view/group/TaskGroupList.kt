@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import group.EditTaskGroup
 import group.TaskGroup
+import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun TaskGroupList(
@@ -27,6 +28,18 @@ fun TaskGroupList(
     val listState = rememberLazyListState()
 
     var currentGroupIndex by remember { mutableStateOf(-1) }
+
+    LaunchedEffect(Dispatchers.IO) {
+        TaskClient.getGroups { groups ->
+            taskGroups.addAll(groups)
+
+            val lastGroupId = MyPref.myPref?.get<Long>(MyPref.PrefLastShowGroup) ?: -1L
+
+            currentGroupIndex = taskGroups.indexOfFirst {
+                it.id == lastGroupId
+            }
+        }
+    }
 
     LazyColumn(state = listState) {
         itemsIndexed(taskGroups) { index, taskGroup ->
@@ -43,6 +56,8 @@ fun TaskGroupList(
                         currentGroupIndex = index
 
                         onGroupSelected(taskGroup)
+
+                        MyPref.myPref?.save(MyPref.PrefLastShowGroup, taskGroup.id)
                     }
             ) {
                 TaskGroupItem(
