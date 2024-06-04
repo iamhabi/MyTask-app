@@ -35,7 +35,7 @@ fun SmallApp() {
     val taskGroups = remember { mutableStateListOf<TaskGroup>() }
     val taskItems = remember { mutableStateListOf<TaskItem>() }
 
-    var selectedGroupIndex by remember { mutableStateOf(-1) }
+    var currentGroup by remember { mutableStateOf<TaskGroup?>(null) }
 
     var detailTaskIndex by remember { mutableStateOf(-1) }
     var isOpenDetail by remember { mutableStateOf(false) }
@@ -118,9 +118,9 @@ fun SmallApp() {
                             )
                         }
 
-                        if (selectedGroupIndex >= 0) {
+                        if (currentGroup != null) {
                             Text(
-                                text = taskGroups[selectedGroupIndex].title,
+                                text = currentGroup!!.title,
                                 maxLines = 1
                             )
                         }
@@ -141,7 +141,7 @@ fun SmallApp() {
                     }
                     
                     AddTask { title ->
-                        val groupId = taskGroups[selectedGroupIndex].id
+                        val groupId = currentGroup?.id ?: return@AddTask
                         
                         TaskClient.createTask(
                             groupId = groupId,
@@ -196,18 +196,21 @@ fun SmallApp() {
                     ) {
                         TaskGroupList(
                             taskGroups = taskGroups,
-                            onGroupSelected = { index ->
-                                selectedGroupIndex = index
-
-                                val groupId = taskGroups[index].id
+                            onGroupSelected = { taskGroup ->
+                                currentGroup = taskGroup
 
                                 taskItems.clear()
 
-                                TaskClient.getTasks(groupId) {
+                                TaskClient.getTasks(taskGroup.id) {
                                     taskItems.addAll(it)
                                 }
 
                                 close()
+                            },
+                            onGroupDeleted = { deletedGroup ->
+                                if (deletedGroup.id == currentGroup?.id) {
+                                    taskItems.clear()
+                                }
                             }
                         )
                     }
