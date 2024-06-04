@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import onKeyUp
@@ -28,6 +29,8 @@ fun AddTaskGroup(
 ) {
     val input = remember { mutableStateOf("") }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     fun createGroup(title: String) {
         if (title == "") {
             return
@@ -36,6 +39,8 @@ fun AddTaskGroup(
         onCreateGroup(title)
 
         input.value = ""
+
+        keyboardController?.hide()
     }
 
     Row(
