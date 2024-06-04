@@ -1,7 +1,3 @@
-package task
-
-import MyPref
-import TaskClient
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,8 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
-import toDateTime
-import view.task.TaskListTopLayout
+import task.TaskItem
 
 @Composable
 fun TaskList(

@@ -8,12 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import group.AddTaskGroup
 import group.TaskGroup
-import task.AddTask
-import task.TaskDetail
 import task.TaskItem
-import task.TaskList
 
 @Composable
 fun BigApp() {

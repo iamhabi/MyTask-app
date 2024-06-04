@@ -19,13 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
-import group.AddTaskGroup
 import group.TaskGroup
 import kotlinx.coroutines.launch
-import task.AddTask
-import task.TaskDetail
 import task.TaskItem
-import task.TaskList
 import kotlin.math.roundToInt
 
 enum class DragValue { Start, End }

@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import group.EditTaskGroup
 import group.TaskGroup
 import kotlinx.coroutines.Dispatchers
 

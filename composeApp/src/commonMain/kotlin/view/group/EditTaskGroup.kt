@@ -1,5 +1,3 @@
-package group
-
 import TaskClient
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -9,6 +7,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import group.TaskGroup
 import onKeyUp
 
 @Composable
