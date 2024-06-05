@@ -1,4 +1,7 @@
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
@@ -17,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun TaskListTopLayout(
+fun Options(
     isSortByTitle: MutableState<Boolean>,
     isSortByDueDate: MutableState<Boolean>,
     isSortByDoneState: MutableState<Boolean>,
@@ -25,57 +28,51 @@ fun TaskListTopLayout(
 ) {
     val isShowMore = remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        contentAlignment = Alignment.CenterEnd
-    ) {
-        Box {
-            IconButton(
-                onClick = { isShowMore.value = true },
-                content = {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Task Settings"
-                    )
-                }
-            )
+    Box {
+        IconButton(
+            onClick = { isShowMore.value = true },
+            content = {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Task Settings"
+                )
+            }
+        )
 
-            DropdownMenu(
-                expanded = isShowMore.value,
-                onDismissRequest = { isShowMore.value = false },
-                content = {
-                    Column(
-                        modifier = Modifier.padding(8.dp)
+        DropdownMenu(
+            expanded = isShowMore.value,
+            onDismissRequest = { isShowMore.value = false },
+            content = {
+                Column(
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    SelectSortMethod(
+                        isSortByTitle,
+                        isSortByDueDate,
+                        isSortByDoneState
+                    )
+
+                    Divider()
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        SelectSortMethod(
-                            isSortByTitle,
-                            isSortByDueDate,
-                            isSortByDoneState
+                        Checkbox(
+                            checked = isHideDoneTask.value,
+                            onCheckedChange = {
+                                isHideDoneTask.value = it
+
+                                MyPref.myPref?.save(MyPref.PrefHideDoneTask, it)
+                            }
                         )
 
-                        Divider()
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Checkbox(
-                                checked = isHideDoneTask.value,
-                                onCheckedChange = {
-                                    isHideDoneTask.value = it
-
-                                    MyPref.myPref?.save(MyPref.PrefHideDoneTask, it)
-                                }
-                            )
-                            
-                            Text("Hide done task")
-                        }
+                        Text("Hide done task")
                     }
                 }
-            )
-        }
+            }
+        )
     }
+
 }
 
 @Composable
