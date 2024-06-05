@@ -195,7 +195,7 @@ fun SmallApp() {
                                 taskItems.clear()
 
                                 TaskClient.getTasks(taskGroup.id) {
-                                    taskItems.addAll(it)
+                                    taskItems.add(it)
                                 }
 
                                 close()

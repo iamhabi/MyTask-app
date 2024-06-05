@@ -48,7 +48,7 @@ fun BigApp() {
                                 taskItems.clear()
 
                                 TaskClient.getTasks(selectedGroup.id) {
-                                    taskItems.addAll(it)
+                                    taskItems.add(it)
                                 }
                             },
                             onGroupDeleted = { deletedGroup ->

@@ -29,19 +29,22 @@ fun TaskGroupList(
     var currentGroupIndex by remember { mutableStateOf(-1) }
 
     LaunchedEffect(Dispatchers.IO) {
-        TaskClient.getGroups { groups ->
-            taskGroups.addAll(groups)
+        TaskClient.getGroups(
+            callback = {
+                taskGroups.add(it)
+            },
+            onFinish = {
+                val lastGroupId = MyPref.myPref?.get<Long>(MyPref.PrefLastShowGroup) ?: -1L
 
-            val lastGroupId = MyPref.myPref?.get<Long>(MyPref.PrefLastShowGroup) ?: -1L
+                currentGroupIndex = taskGroups.indexOfFirst {
+                    it.id == lastGroupId
+                }
 
-            currentGroupIndex = taskGroups.indexOfFirst {
-                it.id == lastGroupId
+                if (currentGroupIndex != -1) {
+                    onGroupSelected(taskGroups[currentGroupIndex])
+                }
             }
-
-            if (currentGroupIndex != -1) {
-                onGroupSelected(taskGroups[currentGroupIndex])
-            }
-        }
+        )
     }
 
     LazyColumn(state = listState) {

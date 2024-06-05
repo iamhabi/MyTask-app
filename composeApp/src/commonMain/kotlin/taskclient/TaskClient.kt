@@ -32,12 +32,14 @@ object TaskClient {
         return SecretKeySpec(TaskClientKey.KEY.toByteArray(), "AES")
     }
 
-    fun getGroups(callback: (List<TaskGroup>) -> Unit) {
+    fun getGroups(callback: (TaskGroup) -> Unit, onFinish: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = client.get(BASE_GROUP)
 
-                callback(response.groups())
+                response.groups(callback)
+
+                onFinish()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -115,7 +117,7 @@ object TaskClient {
 
     private var jobGetTasks: Job? = null
 
-    fun getTasks(groupId: Long, callback: (List<TaskItem>) -> Unit) {
+    fun getTasks(groupId: Long, callback: (TaskItem) -> Unit) {
         jobGetTasks?.cancel()
         jobGetTasks = CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -123,7 +125,7 @@ object TaskClient {
                     parameter("group_id", groupId)
                 }
 
-                callback(response.tasks())
+                response.tasks(callback)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -240,31 +242,23 @@ object TaskClient {
         }
     }
 
-    private suspend fun HttpResponse.groups(): List<TaskGroup> {
+    private suspend fun HttpResponse.groups(onGetGroup: (TaskGroup) -> Unit) {
         val body = bodyAsText()
 
         val groups = Json.decodeFromString<List<TaskGroup>>(body)
 
-        val descryptedGroups = mutableListOf<TaskGroup>()
-
         for (group in groups) {
-            descryptedGroups.add(group.decrypt(getAESKey()))
+            onGetGroup(group.decrypt(getAESKey()))
         }
-
-        return descryptedGroups
     }
 
-    private suspend fun HttpResponse.tasks(): List<TaskItem> {
+    private suspend fun HttpResponse.tasks(onGetTask: (TaskItem) -> Unit) {
         val body = bodyAsText()
 
         val tasks = Json.decodeFromString<List<EncryptedTaskItem>>(body)
 
-        val descryptedTasks = mutableListOf<TaskItem>()
-
         for (task in tasks) {
-            descryptedTasks.add(task.decrypt(getAESKey()))
+            onGetTask(task.decrypt(getAESKey()))
         }
-
-        return descryptedTasks
     }
 }
