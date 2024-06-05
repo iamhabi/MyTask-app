@@ -74,14 +74,18 @@ fun TaskGroupList(
                             onSuccess = {
                                 onGroupDeleted(taskGroup)
 
-                                val currentGroup = taskGroups[currentGroupIndex]
+                                if (currentGroupIndex != -1) {
+                                    val currentGroup = taskGroups[currentGroupIndex]
 
-                                taskGroups.remove(taskGroup)
+                                    taskGroups.remove(taskGroup)
 
-                                currentGroupIndex = if (index == currentGroupIndex) {
-                                    -1
+                                    currentGroupIndex = if (index == currentGroupIndex) {
+                                        -1
+                                    } else {
+                                        taskGroups.indexOf(currentGroup)
+                                    }
                                 } else {
-                                    taskGroups.indexOf(currentGroup)
+                                    taskGroups.remove(taskGroup)
                                 }
                             },
                             onFailed = {
