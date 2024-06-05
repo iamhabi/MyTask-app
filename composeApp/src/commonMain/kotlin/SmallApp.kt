@@ -6,13 +6,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import group.TaskGroup
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import task.TaskItem
 import kotlin.math.roundToInt
@@ -37,6 +35,20 @@ fun SmallApp() {
     var detailTaskIndex by remember { mutableStateOf(-1) }
     var isOpenDetail by remember { mutableStateOf(false) }
     
+    val isSortByTitle = remember { mutableStateOf(false) }
+    val isSortByDueDate = remember { mutableStateOf(false) }
+    val isSortByDoneState = remember { mutableStateOf(false) }
+
+    val isHideDonetask = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Dispatchers.IO) {
+        isSortByTitle.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByTitle) ?: false
+        isSortByDueDate.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByDueDate) ?: false
+        isSortByDoneState.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByDoneState) ?: false
+
+        isHideDonetask.value = MyPref.myPref?.get<Boolean>(MyPref.PrefHideDoneTask) ?: false
+    }
+
     MaterialTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -111,14 +123,23 @@ fun SmallApp() {
                             )
                         }
 
-                        if (currentGroup != null) {
-                            Text(
-                                text = currentGroup!!.title,
-                                maxLines = 1
-                            )
-                        }
+                        Text(
+                            text = currentGroup?.title ?: "",
+                            maxLines = 1,
+                            modifier = Modifier
+                                .weight(1F)
+                        )
+
+                        Options(
+                            isSortByTitle = isSortByTitle,
+                            isSortByDueDate = isSortByDueDate,
+                            isSortByDoneState = isSortByDoneState,
+                            isHideDoneTask = isHideDonetask
+                        )
                     }
-                    
+
+                    HorizontalDivider()
+
                     Box(
                         modifier = Modifier
                             .weight(1F)
@@ -129,7 +150,11 @@ fun SmallApp() {
                                 detailTaskIndex = taskItems.indexOf(taskItem)
                                 
                                 isOpenDetail = true
-                            }
+                            },
+                            isSortByTitle = isSortByTitle,
+                            isSortByDueDate = isSortByDueDate,
+                            isSortByDoneState = isSortByDoneState,
+                            isHideDonetask = isHideDonetask
                         )
                     }
                     
@@ -203,6 +228,7 @@ fun SmallApp() {
                             onGroupDeleted = { deletedGroup ->
                                 if (deletedGroup.id == currentGroup?.id) {
                                     taskItems.clear()
+                                    currentGroup = null
                                 }
                             }
                         )

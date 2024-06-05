@@ -7,7 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -16,83 +16,61 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
 import task.TaskItem
 
 @Composable
 fun TaskList(
     taskItems: SnapshotStateList<TaskItem>,
-    onItemClick: (TaskItem) -> Unit
+    onItemClick: (TaskItem) -> Unit,
+    isSortByTitle: MutableState<Boolean>,
+    isSortByDueDate: MutableState<Boolean>,
+    isSortByDoneState: MutableState<Boolean>,
+    isHideDonetask: MutableState<Boolean>,
 ) {
     val listState = rememberLazyListState()
 
-    val isSortByTitle = remember { mutableStateOf(false) }
-    val isSortByDueDate = remember { mutableStateOf(false) }
-    val isSortByDoneState = remember { mutableStateOf(false) }
+    LazyColumn(state = listState) {
+        items(
+            taskItems
+                .sortedByDescending { it.id }
+                .sortedWith(
+                    compareBy(
+                        { if (isSortByDoneState.value) it.isDone else false },
+                        { if (isSortByTitle.value) it.title else false },
+                        { if (isSortByDueDate.value) it.dueDate else false }
+                    )
+                )
+                .filter {
+                    if (isHideDonetask.value) {
+                        return@filter !it.isDone
+                    }
 
-    val isHideDonetask = remember { mutableStateOf(false) }
+                    true
+                },
+            key = { it.id }
+        ) { taskItem ->
+            Column(
+                modifier = Modifier
+                    .clickable {
+                        onItemClick(taskItem)
+                    }
+            ) {
+                TaskListItem(
+                    taskItem = taskItem,
+                    onDeleteItem = {
+                        TaskClient.deleteTask(
+                            taskItem = taskItem,
+                            onSuccess = {
+                                taskItems.remove(taskItem)
+                            },
+                            onFailed = {
 
-    LaunchedEffect(Dispatchers.IO) {
-        isSortByTitle.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByTitle) ?: false
-        isSortByDueDate.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByDueDate) ?: false
-        isSortByDoneState.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByDoneState) ?: false
-
-        isHideDonetask.value = MyPref.myPref?.get<Boolean>(MyPref.PrefHideDoneTask) ?: false
-    }
-
-    Column {
-        TaskListTopLayout(
-            isSortByTitle = isSortByTitle,
-            isSortByDueDate = isSortByDueDate,
-            isSortByDoneState = isSortByDoneState,
-            isHideDoneTask = isHideDonetask
-        )
-
-        Divider()
-
-        LazyColumn(state = listState) {
-            items(
-                taskItems
-                    .sortedByDescending { it.id }
-                    .sortedWith(
-                        compareBy(
-                            { if (isSortByDoneState.value) it.isDone else false },
-                            { if (isSortByTitle.value) it.title else false },
-                            { if (isSortByDueDate.value) it.dueDate else false }
+                            }
                         )
-                    )
-                    .filter {
-                        if (isHideDonetask.value) {
-                            return@filter !it.isDone
-                        }
+                    }
+                )
 
-                        true
-                    },
-                key = { it.id }
-            ) { taskItem ->
-                Column(
-                    modifier = Modifier
-                        .clickable {
-                            onItemClick(taskItem)
-                        }
-                ) {
-                    TaskListItem(
-                        taskItem = taskItem,
-                        onDeleteItem = {
-                            TaskClient.deleteTask(
-                                taskItem = taskItem,
-                                onSuccess = {
-                                    taskItems.remove(taskItem)
-                                },
-                                onFailed = {
-
-                                }
-                            )
-                        }
-                    )
-
-                    Divider()
-                }
+                Divider()
             }
         }
     }

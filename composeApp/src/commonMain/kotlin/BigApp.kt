@@ -2,13 +2,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import group.TaskGroup
+import kotlinx.coroutines.Dispatchers
 import task.TaskItem
 
 @Composable
@@ -20,6 +23,20 @@ fun BigApp() {
 
     var detailTaskIndex by remember { mutableStateOf(-1) }
     var isOpenDetail by remember { mutableStateOf(false) }
+
+    val isSortByTitle = remember { mutableStateOf(false) }
+    val isSortByDueDate = remember { mutableStateOf(false) }
+    val isSortByDoneState = remember { mutableStateOf(false) }
+
+    val isHideDonetask = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Dispatchers.IO) {
+        isSortByTitle.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByTitle) ?: false
+        isSortByDueDate.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByDueDate) ?: false
+        isSortByDoneState.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByDoneState) ?: false
+
+        isHideDonetask.value = MyPref.myPref?.get<Boolean>(MyPref.PrefHideDoneTask) ?: false
+    }
 
     MaterialTheme {
         BoxWithConstraints(
@@ -54,6 +71,7 @@ fun BigApp() {
                             onGroupDeleted = { deletedGroup ->
                                 if (deletedGroup.id == currentGroup?.id) {
                                     taskItems.clear()
+                                    currentGroup = null
                                 }
                             }
                         )
@@ -72,7 +90,7 @@ fun BigApp() {
                     }
                 }
                 
-                Divider(
+                VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(1.dp)
@@ -82,6 +100,29 @@ fun BigApp() {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = currentGroup?.title ?: "",
+                            maxLines = 1,
+                            modifier = Modifier
+                                .weight(1F),
+                        )
+
+                        Options(
+                            isSortByTitle = isSortByTitle,
+                            isSortByDueDate = isSortByDueDate,
+                            isSortByDoneState = isSortByDoneState,
+                            isHideDoneTask = isHideDonetask
+                        )
+                    }
+
+                    HorizontalDivider()
+
                     Box(
                         modifier = Modifier
                             .weight(1F)
@@ -92,7 +133,11 @@ fun BigApp() {
                                 detailTaskIndex = taskItems.indexOf(taskItem)
                                 
                                 isOpenDetail = true
-                            }
+                            },
+                            isSortByTitle = isSortByTitle,
+                            isSortByDueDate = isSortByDueDate,
+                            isSortByDoneState = isSortByDoneState,
+                            isHideDonetask = isHideDonetask
                         )
                     }
                     
