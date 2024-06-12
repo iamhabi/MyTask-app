@@ -9,73 +9,39 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import group.TaskGroup
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 
 @Composable
 fun TaskGroupList(
+    currentGroupIndex: MutableState<Int>,
     taskGroups: SnapshotStateList<TaskGroup>,
     onGroupSelected: (TaskGroup) -> Unit,
     onGroupDeleted: (TaskGroup) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
-    var currentGroupIndex by remember { mutableStateOf(-1) }
-
-    LaunchedEffect(Dispatchers.IO) {
-        TaskClient.getGroups(
-            callback = {
-                if (!taskGroups.contains(it)) {
-                    taskGroups.add(it)
-                }
-            },
-            onFinish = {
-                val lastGroupId = MyPref.myPref?.get<Long>(MyPref.PrefLastShowGroup) ?: -1L
-
-                currentGroupIndex = taskGroups.indexOfFirst {
-                    it.id == lastGroupId
-                }
-
-                if (currentGroupIndex != -1) {
-                    onGroupSelected(taskGroups[currentGroupIndex])
-                }
-            }
-        )
-
-        while (true) {
-            delay(60 * 1000L)
-            
-            TaskClient.getGroups(
-                callback = {
-                    if (!taskGroups.contains(it)) {
-                        taskGroups.add(it)
-                    }
-                },
-                onFinish = { }
-            )
-        }
-    }
-
     LazyColumn(state = listState) {
         itemsIndexed(taskGroups) { index, taskGroup ->
             Column(
                 modifier = Modifier
                     .background(
-                        if (currentGroupIndex == index) {
+                        if (currentGroupIndex.value == index) {
                             Color.Blue.copy(alpha = 0.2F)
                         } else {
                             Color.Transparent
                         }
                     )
                     .clickable {
-                        currentGroupIndex = index
+                        currentGroupIndex.value = index
 
                         onGroupSelected(taskGroup)
 
@@ -90,12 +56,12 @@ fun TaskGroupList(
                             onSuccess = {
                                 onGroupDeleted(taskGroup)
 
-                                if (currentGroupIndex != -1) {
-                                    val currentGroup = taskGroups[currentGroupIndex]
+                                if (currentGroupIndex.value != -1) {
+                                    val currentGroup = taskGroups[currentGroupIndex.value]
 
                                     taskGroups.remove(taskGroup)
 
-                                    currentGroupIndex = if (index == currentGroupIndex) {
+                                    currentGroupIndex.value = if (index == currentGroupIndex.value) {
                                         -1
                                     } else {
                                         taskGroups.indexOf(currentGroup)

@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import group.TaskGroup
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import task.TaskItem
 import kotlin.math.roundToInt
@@ -27,10 +28,13 @@ enum class DragValue { Start, End }
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SmallApp() {
-    val taskGroups = remember { mutableStateListOf<TaskGroup>() }
-    val taskItems = remember { mutableStateListOf<TaskItem>() }
+    val taskMaps = hashMapOf<Long, MutableList<TaskItem>>()
 
-    var currentGroup by remember { mutableStateOf<TaskGroup?>(null) }
+    val taskGroups = remember { mutableStateListOf<TaskGroup>() }
+
+    val currentTaskGroupIndex = remember { mutableStateOf(-1) }
+    var currentTaskGroup by remember { mutableStateOf<TaskGroup?>(null) }
+    val currentTaskItems = remember { mutableStateListOf<TaskItem>() }
 
     var detailTaskIndex by remember { mutableStateOf(-1) }
     var isOpenDetail by remember { mutableStateOf(false) }
@@ -47,6 +51,70 @@ fun SmallApp() {
         isSortByDoneState.value = MyPref.myPref?.get<Boolean>(MyPref.PrefSortByDoneState) ?: false
 
         isHideDonetask.value = MyPref.myPref?.get<Boolean>(MyPref.PrefHideDoneTask) ?: false
+
+        while (true) {
+            TaskClient.getGroups(
+                callback = { taskGroup ->
+                    if (!taskGroups.contains(taskGroup)) {
+                        taskGroups.add(taskGroup)
+                    }
+
+                    if (!taskMaps.containsKey(taskGroup.id)) {
+                        taskMaps[taskGroup.id] = mutableListOf()
+                    }
+
+                    TaskClient.getTasks(
+                        groupId = taskGroup.id,
+                        callback = { taskItem ->
+                            taskMaps[taskGroup.id]?.run {
+                                if (!contains(taskItem)) {
+                                    add(taskItem)
+                                }
+                            }
+                        }
+                    )
+                },
+                onFinish = {
+                    if (currentTaskGroupIndex.value != -1) {
+                        return@getGroups
+                    }
+
+                    val lastGroupId = MyPref.myPref?.get<Long>(MyPref.PrefLastShowGroup) ?: -1L
+
+                    currentTaskGroupIndex.value = taskGroups.indexOfFirst {
+                        it.id == lastGroupId
+                    }
+
+                    if (currentTaskGroupIndex.value != -1) {
+                        currentTaskGroup = taskGroups.first {
+                            it.id == lastGroupId
+                        }
+
+                        val items = taskMaps.getValue(currentTaskGroup!!.id)
+
+                        if (items.isEmpty()) {
+                            TaskClient.getTasks(
+                                groupId = lastGroupId,
+                                callback = { taskItem ->
+                                    currentTaskItems.run {
+                                        if (!contains(taskItem)) {
+                                            add(taskItem)
+                                        }
+                                    }
+                                }
+                            )
+                        } else {
+                            currentTaskItems.run {
+                                clear()
+                                addAll(items)
+                            }
+                        }
+                    }
+                }
+            )
+
+            delay(60 * 1000L)
+        }
     }
 
     MaterialTheme {
@@ -124,7 +192,7 @@ fun SmallApp() {
                         }
 
                         Text(
-                            text = currentGroup?.title ?: "",
+                            text = currentTaskGroup?.title ?: "",
                             maxLines = 1,
                             modifier = Modifier
                                 .weight(1F)
@@ -145,9 +213,9 @@ fun SmallApp() {
                             .weight(1F)
                     ) {
                         TaskList(
-                            taskItems = taskItems,
+                            taskItems = currentTaskItems,
                             onItemClick = { taskItem ->
-                                detailTaskIndex = taskItems.indexOf(taskItem)
+                                detailTaskIndex = currentTaskItems.indexOf(taskItem)
                                 
                                 isOpenDetail = true
                             },
@@ -159,13 +227,19 @@ fun SmallApp() {
                     }
                     
                     AddTask { title ->
-                        val groupId = currentGroup?.id ?: return@AddTask
+                        val groupId = currentTaskGroup?.id ?: return@AddTask
                         
                         TaskClient.createTask(
                             groupId = groupId,
                             title = title,
                             onSuccess = { createdTask ->
-                                taskItems.add(createdTask)
+                                currentTaskItems.add(createdTask)
+
+                                taskMaps[currentTaskGroup?.id]?.run {
+                                    if (!contains(createdTask)) {
+                                        add(createdTask)
+                                    }
+                                }
                             },
                             onFailed = {
                                 
@@ -213,22 +287,24 @@ fun SmallApp() {
                             .weight(1F)
                     ) {
                         TaskGroupList(
+                            currentGroupIndex = currentTaskGroupIndex,
                             taskGroups = taskGroups,
-                            onGroupSelected = { taskGroup ->
-                                currentGroup = taskGroup
+                            onGroupSelected = { selectedGroup ->
+                                currentTaskGroup = selectedGroup
 
-                                taskItems.clear()
-
-                                TaskClient.getTasks(taskGroup.id) {
-                                    taskItems.add(it)
+                                currentTaskItems.run {
+                                    clear()
+                                    addAll(taskMaps.getValue(selectedGroup.id))
                                 }
 
                                 close()
                             },
                             onGroupDeleted = { deletedGroup ->
-                                if (deletedGroup.id == currentGroup?.id) {
-                                    taskItems.clear()
-                                    currentGroup = null
+                                taskMaps.remove(deletedGroup.id)
+
+                                if (deletedGroup.id == currentTaskGroup?.id) {
+                                    currentTaskItems.clear()
+                                    currentTaskGroup = null
                                 }
                             }
                         )
@@ -239,6 +315,10 @@ fun SmallApp() {
                             title = title,
                             onSuccess = { createdGroup ->
                                 taskGroups.add(createdGroup)
+
+                                if (!taskMaps.containsKey(createdGroup.id)) {
+                                    taskMaps[createdGroup.id] = mutableListOf()
+                                }
                             },
                             onFailed = {
                                 
@@ -253,7 +333,7 @@ fun SmallApp() {
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
-                val detailTaskItem = taskItems[detailTaskIndex].copy()
+                val detailTaskItem = currentTaskItems[detailTaskIndex].copy()
                 
                 TaskDetail(
                     taskItem = detailTaskItem,
@@ -261,7 +341,7 @@ fun SmallApp() {
                         TaskClient.updateTask(
                             taskItem = updatedItem,
                             onSuccess = {
-                                taskItems[detailTaskIndex] = updatedItem
+                                currentTaskItems[detailTaskIndex] = updatedItem
                                 
                                 isOpenDetail = false
                             },
@@ -274,7 +354,7 @@ fun SmallApp() {
                         TaskClient.deleteTask(
                             taskItem = detailTaskItem,
                             onSuccess = {
-                                taskItems.removeAt(detailTaskIndex)
+                                currentTaskItems.removeAt(detailTaskIndex)
                                 
                                 isOpenDetail = false
                             },
