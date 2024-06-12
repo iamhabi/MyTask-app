@@ -31,7 +31,9 @@ fun TaskGroupList(
     LaunchedEffect(Dispatchers.IO) {
         TaskClient.getGroups(
             callback = {
-                taskGroups.add(it)
+                if (!taskGroups.contains(it)) {
+                    taskGroups.add(it)
+                }
             },
             onFinish = {
                 val lastGroupId = MyPref.myPref?.get<Long>(MyPref.PrefLastShowGroup) ?: -1L
