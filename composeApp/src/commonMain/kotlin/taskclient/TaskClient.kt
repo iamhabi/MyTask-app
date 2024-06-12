@@ -8,7 +8,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
@@ -115,11 +114,8 @@ object TaskClient {
         }
     }
 
-    private var jobGetTasks: Job? = null
-
     fun getTasks(groupId: Long, callback: (TaskItem) -> Unit) {
-        jobGetTasks?.cancel()
-        jobGetTasks = CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = client.get(BASE_TASK) {
                     parameter("group_id", groupId)
