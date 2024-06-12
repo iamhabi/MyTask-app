@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import group.TaskGroup
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 
 @Composable
 fun TaskGroupList(
@@ -47,6 +48,19 @@ fun TaskGroupList(
                 }
             }
         )
+
+        while (true) {
+            delay(60 * 1000L)
+            
+            TaskClient.getGroups(
+                callback = {
+                    if (!taskGroups.contains(it)) {
+                        taskGroups.add(it)
+                    }
+                },
+                onFinish = { }
+            )
+        }
     }
 
     LazyColumn(state = listState) {
