@@ -131,9 +131,19 @@ fun BigApp() {
                             onGroupSelected = { selectedGroup ->
                                 currentTaskGroup = selectedGroup
 
-                                currentTaskItems.run {
-                                    clear()
-                                    addAll(taskMaps.getValue(selectedGroup.id))
+                                currentTaskItems.clear()
+
+                                if (taskMaps.containsKey(selectedGroup.id)) {
+                                    val items = taskMaps.getValue(selectedGroup.id)
+
+                                    currentTaskItems.addAll(items)
+                                } else {
+                                    TaskClient.getTasks(
+                                        groupId = selectedGroup.id,
+                                        callback = { taskItem ->
+                                            currentTaskItems.add(taskItem)
+                                        }
+                                    )
                                 }
                             },
                             onGroupDeleted = { deletedGroup ->
