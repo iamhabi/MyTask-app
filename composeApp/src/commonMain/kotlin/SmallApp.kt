@@ -214,13 +214,12 @@ fun SmallApp() {
                     ) {
                         TaskGroupList(
                             taskGroups = taskGroups,
-                            onGroupSelected = { taskGroup ->
-                                currentGroup = taskGroup
+                            onGroupSelected = { selectedGroup ->
+                                currentGroup = selectedGroup
 
-                                taskItems.clear()
-
-                                TaskClient.getTasks(taskGroup.id) {
-                                    taskItems.add(it)
+                                TaskClient.getTasks(selectedGroup.id) {
+                                    taskItems.clear()
+                                    taskItems.addAll(it)
                                 }
 
                                 close()

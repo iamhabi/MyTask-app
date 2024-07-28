@@ -11,7 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import group.TaskGroup
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import task.TaskItem
 
 @Composable
@@ -62,10 +64,9 @@ fun BigApp() {
                             onGroupSelected = { selectedGroup ->
                                 currentGroup = selectedGroup
 
-                                taskItems.clear()
-
                                 TaskClient.getTasks(selectedGroup.id) {
-                                    taskItems.add(it)
+                                    taskItems.clear()
+                                    taskItems.addAll(it)
                                 }
                             },
                             onGroupDeleted = { deletedGroup ->
