@@ -1,3 +1,4 @@
+import androidx.compose.runtime.mutableStateOf
 import data.EncryptedTaskItem
 import group.TaskGroup
 import io.ktor.client.*
@@ -117,7 +118,7 @@ object TaskClient {
 
     private var jobGetTasks: Job? = null
 
-    fun getTasks(groupId: Long, callback: (TaskItem) -> Unit) {
+    fun getTasks(groupId: Long, callback: (List<TaskItem>) -> Unit) {
         jobGetTasks?.cancel()
         jobGetTasks = CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -125,7 +126,7 @@ object TaskClient {
                     parameter("group_id", groupId)
                 }
 
-                response.tasks(callback)
+                response.getTasks(callback)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -144,7 +145,7 @@ object TaskClient {
                 val encryptedTask = TaskItem(
                     0,
                     title,
-                    false,
+                    mutableStateOf(false),
                     groupId,
                     "",
                     created,
@@ -252,13 +253,19 @@ object TaskClient {
         }
     }
 
-    private suspend fun HttpResponse.tasks(onGetTask: (TaskItem) -> Unit) {
+    private suspend fun HttpResponse.getTasks(onGetTasks: (List<TaskItem>) -> Unit) {
         val body = bodyAsText()
 
-        val tasks = Json.decodeFromString<List<EncryptedTaskItem>>(body)
+        val encryptedTasks = Json.decodeFromString<List<EncryptedTaskItem>>(body)
+        val decryptedTasks = mutableListOf<TaskItem>()
 
-        for (task in tasks) {
-            onGetTask(task.decrypt(getAESKey()))
+        for (encryptedTask in encryptedTasks) {
+            val task = encryptedTask.decrypt(getAESKey())
+            val index = decryptedTasks.getSortedIndex(task)
+
+            decryptedTasks.add(index, task)
         }
+
+        onGetTasks(decryptedTasks)
     }
 }
