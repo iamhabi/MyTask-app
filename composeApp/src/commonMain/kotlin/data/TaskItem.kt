@@ -1,5 +1,6 @@
 package task
 
+import androidx.compose.runtime.MutableState
 import data.EncryptedTaskItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -10,21 +11,13 @@ import javax.crypto.spec.IvParameterSpec
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-@Serializable
 data class TaskItem(
-    @SerialName("id")
     val id: Long,
-    @SerialName("title")
     var title: String,
-    @SerialName("is_done")
-    var isDone: Boolean,
-    @SerialName("group_id")
+    var isDone: MutableState<Boolean>,
     var groupId: Long,
-    @SerialName("description")
     var description: String = "",
-    @SerialName("created")
     var created: Long,
-    @SerialName("due_date")
     var dueDate: Long = 0L
 ) {
     @OptIn(ExperimentalEncodingApi::class)

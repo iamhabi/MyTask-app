@@ -30,23 +30,24 @@ fun TaskList(
     val listState = rememberLazyListState()
 
     LazyColumn(state = listState) {
-        items(
-            taskItems
-                .sortedByDescending { it.id }
-                .sortedWith(
-                    compareBy(
-                        { if (isSortByDoneState.value) it.isDone else false },
-                        { if (isSortByTitle.value) it.title else false },
-                        { if (isSortByDueDate.value) it.dueDate else false }
-                    )
+        val items = taskItems
+            .sortedWith(
+                compareBy(
+                    { if (isSortByDoneState.value) it.isDone.value else false },
+                    { if (isSortByTitle.value) it.title else false },
+                    { if (isSortByDueDate.value) it.dueDate else false }
                 )
-                .filter {
-                    if (isHideDonetask.value) {
-                        return@filter !it.isDone
-                    }
+            )
+            .filter {
+                if (isHideDonetask.value) {
+                    return@filter !it.isDone.value
+                }
 
-                    true
-                },
+                true
+            }
+
+        items(
+            items,
             key = { it.id }
         ) { taskItem ->
             Column(
@@ -57,6 +58,9 @@ fun TaskList(
             ) {
                 TaskListItem(
                     taskItem = taskItem,
+                    onChecked = { isChecked ->
+
+                    },
                     onDeleteItem = {
                         TaskClient.deleteTask(
                             taskItem = taskItem,
@@ -79,9 +83,10 @@ fun TaskList(
 @Composable
 fun TaskListItem(
     taskItem: TaskItem,
+    onChecked: (Boolean) -> Unit,
     onDeleteItem: () -> Unit
 ) {
-    val isChecked = remember { mutableStateOf(taskItem.isDone) }
+    val isChecked = remember { taskItem.isDone }
 
     Row(
         modifier = Modifier.padding(8.dp),
@@ -91,14 +96,16 @@ fun TaskListItem(
             checked = isChecked.value,
             onCheckedChange = {
                 val copiedTaskItem = taskItem.copy(
-                    isDone = it
+                    isDone = mutableStateOf(it)
                 )
 
                 TaskClient.updateTask(
                     taskItem = copiedTaskItem,
                     onSuccess = {
                         isChecked.value = it
-                        taskItem.isDone = it
+                        taskItem.isDone.value = it
+
+                        onChecked(it)
                     },
                     onFailed = {
 

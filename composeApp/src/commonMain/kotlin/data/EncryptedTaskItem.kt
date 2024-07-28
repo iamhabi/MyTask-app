@@ -1,5 +1,7 @@
 package data
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import task.TaskItem
@@ -47,6 +49,6 @@ data class EncryptedTaskItem(
         val created = cipher.doFinal(decodedCreated).decodeToString().toLong()
         val dueDate = cipher.doFinal(decodedDueDate).decodeToString().toLong()
 
-        return TaskItem(id, title, isDone, groupId, description, created, dueDate)
+        return TaskItem(id, title, mutableStateOf(isDone), groupId, description, created, dueDate)
     }
 }
