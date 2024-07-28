@@ -3,6 +3,7 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import task.TaskItem
 import java.text.SimpleDateFormat
 
 internal fun Modifier.onKeyUp(key: Key, action: () -> Unit): Modifier =
@@ -36,4 +37,18 @@ fun Long.toDateTime(): String {
     val dateFormat = SimpleDateFormat(pattern)
 
     return dateFormat.format(this)
+}
+
+fun List<TaskItem>.getSortedIndex(taskItem: TaskItem): Int {
+    val comparator = Comparator<TaskItem> { o1, o2 ->
+        o1.id.compareTo(o2.id)
+    }
+
+    var index = this.binarySearch(taskItem, comparator)
+
+    if (index < 0) {
+        index = -(index + 1)
+    }
+
+    return index
 }
