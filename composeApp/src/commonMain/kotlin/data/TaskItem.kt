@@ -29,7 +29,7 @@ data class TaskItem(
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec)
 
         val encryptedTitle = cipher.doFinal(title.toByteArray())
-        val encryptedIsDone = cipher.doFinal(isDone.toString().toByteArray())
+        val encryptedIsDone = cipher.doFinal(isDone.value.toString().toByteArray())
         val encryptedDescription = cipher.doFinal(description.toByteArray())
         val encryptedCreated = cipher.doFinal(created.toString().toByteArray())
         val encryptedDueDate = cipher.doFinal(dueDate.toString().toByteArray())
