@@ -206,15 +206,7 @@ object TaskClient {
     fun updateTask(taskItem: TaskItem, onSuccess: () -> Unit, onFailed: (HttpStatusCode) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val encryptedTask = TaskItem(
-                    taskItem.id,
-                    taskItem.title,
-                    taskItem.isDone,
-                    taskItem.groupId,
-                    taskItem.description,
-                    taskItem.created,
-                    taskItem.dueDate
-                ).encrypt(getAESKey())
+                val encryptedTask = taskItem.encrypt(getAESKey())
 
                 val response = client.put(BASE_TASK) {
                     setBody(
