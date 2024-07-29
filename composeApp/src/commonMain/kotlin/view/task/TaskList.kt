@@ -58,9 +58,6 @@ fun TaskList(
             ) {
                 TaskListItem(
                     taskItem = taskItem,
-                    onChecked = { isChecked ->
-
-                    },
                     onDeleteItem = {
                         TaskClient.deleteTask(
                             taskItem = taskItem,
@@ -83,7 +80,6 @@ fun TaskList(
 @Composable
 fun TaskListItem(
     taskItem: TaskItem,
-    onChecked: (Boolean) -> Unit,
     onDeleteItem: () -> Unit
 ) {
     val isChecked = remember { taskItem.isDone }
@@ -104,8 +100,6 @@ fun TaskListItem(
                     onSuccess = {
                         isChecked.value = it
                         taskItem.isDone.value = it
-
-                        onChecked(it)
                     },
                     onFailed = {
 
