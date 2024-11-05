@@ -29,7 +29,9 @@ export default function TaskDetailScreen() {
           <Pressable
             style={{ aspectRatio: 1, margin: 4 }}
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate('Home', {
+                updateTaskJSON: JSON.stringify(task)
+              });
             }}
           >
             <MaterialIcons name="chevron-left" />
@@ -109,6 +111,11 @@ export default function TaskDetailScreen() {
         <Button
           title="Delete"
           color='red'
+          onPress={() => {
+            navigation.navigate('Home', {
+              deletedTaskId: task.id
+            })
+          }}
         />
       </SafeAreaView>
     </TouchableWithoutFeedback>
