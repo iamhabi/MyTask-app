@@ -1,25 +1,61 @@
 import { useState } from "react";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Button, Keyboard, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from "@expo/vector-icons";
 
 import DateTimePicker from "react-native-modal-datetime-picker";
 
+import { Task } from "@/components/TaskItem";
+
 export default function TaskDetailScreen() {
+  const navigation = useNavigation();
   const route = useRoute();
   const { taskJSON } = route.params;
-  const task = JSON.parse(taskJSON);
+  const [task, updateTask] = useState<Task>(JSON.parse(taskJSON) as Task);
 
   const [title, setTitle] = useState<string>(task.title);
   const [description, setDescription] = useState<string | undefined>(task.description !== undefined ? task.description : undefined);
   const [dueDate, setDueDate] = useState<Date | undefined>(task.dueDate !== undefined ? new Date(task.dueDate) : undefined);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const isEdited = title !== task.title || description !== task.description || dueDate !== task.dueDate;
   
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
+        <View style={styles.topContainer}>
+          <Pressable
+            style={{ aspectRatio: 1, margin: 4 }}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <MaterialIcons name="chevron-left" />
+          </Pressable>
+
+          {
+            isEdited ? (
+              <Pressable
+                style={{ aspectRatio: 1, margin: 4 }}
+                onPress={() => {
+                  updateTask({
+                    id: task.id,
+                    title: title,
+                    description: description,
+                    dueDate: dueDate
+                  })
+
+                  Keyboard.dismiss();
+                }}
+              >
+                <MaterialIcons name="save" />
+              </Pressable>
+            ) : null
+          }
+        </View>
+
         <View style={styles.baseContainer}>
           <TextInput
             onChangeText={setTitle}
@@ -60,7 +96,9 @@ export default function TaskDetailScreen() {
         
         <View style={styles.baseContainer}>
           <TextInput
-            onChangeText={setDescription}
+            onChangeText={(text) => {
+              setDescription(text !== '' ? text : undefined)
+            }}
             value={description}
             placeholder={
               task.description !== undefined ? task.description : "No description"
@@ -82,10 +120,16 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 8,
   },
+  topContainer: {
+    minHeight: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
   baseContainer: {
     minHeight: 48,
     marginVertical: 4,
     padding: 8,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 });
