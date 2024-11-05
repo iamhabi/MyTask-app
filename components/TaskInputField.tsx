@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   smallContainer: {
     flexDirection: 'row',
     paddingHorizontal: 8,
-    marginHorizontal: 4,
+    marginEnd: 8,
     borderWidth: 0.7,
     borderRadius: 24,
     alignItems: 'center'
