@@ -11,6 +11,8 @@ export default function TaskDetailScreen() {
   const { taskJSON } = route.params;
   const task = JSON.parse(taskJSON);
 
+  const [title, setTitle] = useState<string>(task.title);
+  const [description, setDescription] = useState<string | undefined>(task.description !== undefined ? task.description : undefined);
   const [dueDate, setDueDate] = useState<Date | undefined>(task.dueDate !== undefined ? new Date(task.dueDate) : undefined);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -19,7 +21,12 @@ export default function TaskDetailScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         <View style={styles.baseContainer}>
-          <TextInput>{task.title}</TextInput>
+          <TextInput
+            onChangeText={setTitle}
+            value={title}
+            numberOfLines={1}
+            placeholder={task.title}
+          />
         </View>
         
         <Pressable
@@ -36,13 +43,7 @@ export default function TaskDetailScreen() {
           }}
         >
           <MaterialIcons name="date-range" style={{ marginEnd: 4 }}/>
-          {
-            dueDate === undefined ? (
-              <Text>Not setted</Text>
-            ) : (
-              <Text>{dueDate.toISOString()}</Text>
-            )
-          }
+          <Text>{dueDate === undefined ? "Not setted" :dueDate.toISOString()}</Text>
         </Pressable>
 
         <DateTimePicker
@@ -58,15 +59,13 @@ export default function TaskDetailScreen() {
         />
         
         <View style={styles.baseContainer}>
-          {
-            task.description !== undefined ? (
-              <TextInput autoFocus>{task.description}</TextInput>
-            ) : (
-              <TextInput
-                placeholder="No description"
-              />
-            )
-          }
+          <TextInput
+            onChangeText={setDescription}
+            value={description}
+            placeholder={
+              task.description !== undefined ? task.description : "No description"
+            }
+          />
         </View>
 
         <Button
