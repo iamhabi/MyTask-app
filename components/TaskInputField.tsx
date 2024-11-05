@@ -81,7 +81,7 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
       </View>
 
       {
-        isDescriptionVisible ? (
+        isDescriptionVisible ?? 
           <TextInput
             style={{ height: 48, }}
             onChangeText={(text) => {
@@ -91,7 +91,6 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
             placeholder="Description"
             autoFocus
           />
-        ) : null
       }
       
     </View>
