@@ -26,13 +26,7 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
         }}>
           <View style={styles.smallContainer}>
             <MaterialIcons name="date-range" style={{ marginEnd: 4 }}/>
-            {
-              dueDate === undefined ? (
-                <Text>Due date</Text>
-              ) : (
-                <Text>{dueDate.toISOString()}</Text>
-              )
-            }
+            <Text>{dueDate === undefined ? "Due date" :dueDate.toISOString()}</Text>
           </View>
         
           <DateTimePicker
@@ -76,7 +70,7 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
               return;
             }
 
-            onTaskAdded({id: Math.floor(Math.random() * 256), title: title, description: description, dueDate: dueDate})
+            onTaskAdded({id: Math.floor(Math.random() * 256), title: title, description: description, dueDate: dueDate});
 
             setTitle('');
             setDescription(undefined);
@@ -89,10 +83,10 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
       {
         isDescriptionVisible ? (
           <TextInput
-            style={{
-              height: 48,
+            style={{ height: 48, }}
+            onChangeText={(text) => {
+              setDescription(text !== '' ? text : undefined)
             }}
-            onChangeText={setDescription}
             value={description}
             placeholder="Description"
             autoFocus
