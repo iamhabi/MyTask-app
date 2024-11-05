@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRoute } from "@react-navigation/native";
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, Keyboard, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -16,64 +16,65 @@ export default function TaskDetailScreen() {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.baseContainer}>
-        <TextInput autoFocus>{task.title}</TextInput>
-      </View>
-      
-      <Pressable
-        style={[
-          styles.baseContainer,
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.baseContainer}>
+          <TextInput>{task.title}</TextInput>
+        </View>
+        
+        <Pressable
+          style={[
+            styles.baseContainer,
+            {
+              flexDirection:'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+            }
+          ]}
+          onPress={() => {
+            setDatePickerVisibility(true);
+          }}
+        >
+          <MaterialIcons name="date-range" style={{ marginEnd: 4 }}/>
           {
-            flexDirection:'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
+            dueDate === undefined ? (
+              <Text>Not setted</Text>
+            ) : (
+              <Text>{dueDate.toISOString()}</Text>
+            )
           }
-        ]}
-        onPress={() => {
-          setDatePickerVisibility(true);
-        }}
-      >
-        <MaterialIcons name="date-range" style={{ marginEnd: 4 }}/>
-        {
-          dueDate === undefined ? (
-            <Text>Not setted</Text>
-          ) : (
-            <Text>{dueDate.toISOString()}</Text>
-          )
-        }
-      </Pressable>
+        </Pressable>
 
-      <DateTimePicker
-        isVisible={isDatePickerVisible}
-        mode="datetime"
-        onConfirm={(date) => {
-          setDueDate(date);
-          setDatePickerVisibility(false);
-        }}
-        onCancel={() => {
-          setDatePickerVisibility(false);
-        }}
-      />
-      
-      <View style={styles.baseContainer}>
-        {
-          task.description !== undefined ? (
-            <TextInput autoFocus>{task.description}</TextInput>
-          ) : (
-            <TextInput
-              placeholder="No description"
-              autoFocus 
-            />
-          )
-        }
-      </View>
+        <DateTimePicker
+          isVisible={isDatePickerVisible}
+          mode="datetime"
+          onConfirm={(date) => {
+            setDueDate(date);
+            setDatePickerVisibility(false);
+          }}
+          onCancel={() => {
+            setDatePickerVisibility(false);
+          }}
+        />
+        
+        <View style={styles.baseContainer}>
+          {
+            task.description !== undefined ? (
+              <TextInput autoFocus>{task.description}</TextInput>
+            ) : (
+              <TextInput
+                placeholder="No description"
+              />
+            )
+          }
+        </View>
 
-      <Button
-        title="Delete"
-        color='red'
-      />
-    </SafeAreaView>
+        <Button
+          title="Delete"
+          color='red'
+        />
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
