@@ -102,6 +102,7 @@ export default function TaskDetailScreen() {
               setDescription(text !== '' ? text : undefined)
             }}
             value={description}
+            multiline
             placeholder={
               task.description !== undefined ? task.description : "No description"
             }
