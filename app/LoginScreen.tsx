@@ -1,3 +1,4 @@
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -6,8 +7,25 @@ export default function LoginScreen() {
   const [id, setID] = useState<string | undefined>(undefined);
   const [password, setPassword] = useState<string | undefined>(undefined);
 
+  const navigation = useNavigation();
+  
   const requestLogin = () => {
     // TODO Request login
+
+    const isLoginSuccess = true;
+    
+    if (isLoginSuccess) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            { name: 'Home' }
+          ]
+        })
+      )
+    } else {
+      // TODO Do something if login failed
+    }
   };
 
   return (
@@ -49,7 +67,7 @@ export default function LoginScreen() {
             ]}
             underlayColor='#CECECE'
             onPress={() => {
-
+              navigation.navigate('Register', {});
             }}
           >
             <Text>Register</Text>
