@@ -3,8 +3,8 @@ import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWit
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
-  const [id, setID] = useState('');
-  const [password, setPassword] = useState('');
+  const [id, setID] = useState<string | undefined>(undefined);
+  const [password, setPassword] = useState<string | undefined>(undefined);
 
   const requestLogin = () => {
     // TODO Request login
@@ -15,7 +15,9 @@ export default function LoginScreen() {
       <SafeAreaView style={styles.container}>
         <TextInput
           style={styles.inputFieldContainer}
-          onChangeText={setID}
+          onChangeText={(text) => {
+            setID(text !== '' ? text : undefined)
+          }}
           value={id}
           placeholder="ID"
           autoFocus
@@ -23,7 +25,9 @@ export default function LoginScreen() {
 
         <TextInput
           style={styles.inputFieldContainer}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text !== '' ? text : undefined)
+          }}
           value={password}
           placeholder="Password"
         />
