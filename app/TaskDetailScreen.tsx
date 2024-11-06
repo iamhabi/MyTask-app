@@ -27,7 +27,13 @@ export default function TaskDetailScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.topContainer}>
           <Pressable
-            style={{ aspectRatio: 1, margin: 4 }}
+            style={{
+              height: '100%',
+              aspectRatio: 1,
+              margin: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             onPress={() => {
               navigation.navigate('Home', {
                 updateTaskJSON: JSON.stringify(task)
@@ -129,10 +135,10 @@ const styles = StyleSheet.create({
     margin: 8,
   },
   topContainer: {
-    minHeight: 48,
+    height: 48,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   baseContainer: {
     minHeight: 48,
