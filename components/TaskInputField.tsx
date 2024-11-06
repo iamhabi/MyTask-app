@@ -57,7 +57,6 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
           value={title}
           numberOfLines={1}
           placeholder="New task"
-          autoFocus
         />
 
         <IconButton
@@ -91,7 +90,7 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
             multiline
             numberOfLines={3}
             placeholder="Description"
-            autoFocus
+            autoFocus={isDescriptionVisible}
           />
         ) : null
       }
