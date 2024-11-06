@@ -1,12 +1,16 @@
+import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, TextInput, TouchableHighlight, View, Text } from "react-native";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, TextInput, TouchableHighlight, View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function RegisterScreen() {
   const [id, setID] = useState<string | undefined>(undefined);
   const [email, setEmail] = useState<string | undefined>(undefined);
   const [password1, setPassword1] = useState<string | undefined>(undefined);
   const [password2, setPassword2] = useState<string | undefined>(undefined);
+
+  const navigation = useNavigation();
 
   const requestRegister = () => {
     // TODO Request register
@@ -15,6 +19,23 @@ export default function RegisterScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
+        <View style={styles.topContainer}>
+          <Pressable
+            style={{
+              height: '100%',
+              aspectRatio: 1,
+              margin: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <MaterialIcons name="chevron-left" />
+          </Pressable>
+        </View>
+
         <TextInput
           style={styles.inputFieldContainer}
           onChangeText={(text) => {
@@ -82,6 +103,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 8,
+  },
+  topContainer: {
+    height: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   inputFieldContainer: {
     borderWidth: 1,
