@@ -7,10 +7,10 @@ import TaskDetailScreen from './TaskDetailScreen';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator()
 
 export default function RootLayout() {
-  const initialRouteName = getInitialRouteName();
+  const initialRouteName = getInitialRouteName()
 
   return (
     <SafeAreaProvider>
@@ -38,13 +38,13 @@ export default function RootLayout() {
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
-  );
+  )
 }
 
 function getInitialRouteName() {
-  return isLoginValid() ? 'Home' : 'Login';
+  return isLoginValid() ? 'Home' : 'Login'
 }
 
 function isLoginValid() {
-  return true;
+  return true
 }

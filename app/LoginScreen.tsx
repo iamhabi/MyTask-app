@@ -4,15 +4,15 @@ import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWit
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
-  const [id, setID] = useState<string | undefined>(undefined);
-  const [password, setPassword] = useState<string | undefined>(undefined);
+  const [id, setID] = useState<string | undefined>(undefined)
+  const [password, setPassword] = useState<string | undefined>(undefined)
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
   
   const requestLogin = () => {
     // TODO Request login
 
-    const isLoginSuccess = true;
+    const isLoginSuccess = true
     
     if (isLoginSuccess) {
       navigation.dispatch(
@@ -26,7 +26,7 @@ export default function LoginScreen() {
     } else {
       // TODO Do something if login failed
     }
-  };
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -67,7 +67,7 @@ export default function LoginScreen() {
             ]}
             underlayColor='#CECECE'
             onPress={() => {
-              navigation.navigate('Register', {});
+              navigation.navigate('Register', {})
             }}
           >
             <Text>Register</Text>
@@ -80,7 +80,7 @@ export default function LoginScreen() {
             ]}
             underlayColor='#1166DD'
             onPress={() => {
-              requestLogin();
+              requestLogin()
             }}
           >
             <Text style={{ color: 'white' }}>Login</Text>
@@ -88,7 +88,7 @@ export default function LoginScreen() {
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
   },
-});
+})

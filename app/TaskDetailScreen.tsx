@@ -9,18 +9,18 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import { Task } from "@/components/TaskItem";
 
 export default function TaskDetailScreen() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { taskJSON } = route.params;
-  const [task, updateTask] = useState<Task>(JSON.parse(taskJSON) as Task);
+  const navigation = useNavigation()
+  const route = useRoute()
+  const { taskJSON } = route.params
+  const [task, updateTask] = useState<Task>(JSON.parse(taskJSON) as Task)
 
-  const [title, setTitle] = useState<string>(task.title);
-  const [description, setDescription] = useState<string | undefined>(task.description !== undefined ? task.description : undefined);
-  const [dueDate, setDueDate] = useState<Date | undefined>(task.dueDate !== undefined ? new Date(task.dueDate) : undefined);
+  const [title, setTitle] = useState<string>(task.title)
+  const [description, setDescription] = useState<string | undefined>(task.description !== undefined ? task.description : undefined)
+  const [dueDate, setDueDate] = useState<Date | undefined>(task.dueDate !== undefined ? new Date(task.dueDate) : undefined)
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
 
-  const isEdited = title !== task.title || description !== task.description || dueDate !== task.dueDate;
+  const isEdited = title !== task.title || description !== task.description || dueDate !== task.dueDate
   
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -37,7 +37,7 @@ export default function TaskDetailScreen() {
             onPress={() => {
               navigation.navigate('Home', {
                 updateTaskJSON: JSON.stringify(task)
-              });
+              })
             }}
           >
             <MaterialIcons name="chevron-left" />
@@ -55,7 +55,7 @@ export default function TaskDetailScreen() {
                     dueDate: dueDate
                   })
 
-                  Keyboard.dismiss();
+                  Keyboard.dismiss()
                 }}
               >
                 <MaterialIcons name="save" />
@@ -83,7 +83,7 @@ export default function TaskDetailScreen() {
             }
           ]}
           onPress={() => {
-            setDatePickerVisibility(true);
+            setDatePickerVisibility(true)
           }}
         >
           <MaterialIcons name="date-range" style={{ marginEnd: 4 }}/>
@@ -94,11 +94,11 @@ export default function TaskDetailScreen() {
           isVisible={isDatePickerVisible}
           mode="datetime"
           onConfirm={(date) => {
-            setDueDate(date);
-            setDatePickerVisibility(false);
+            setDueDate(date)
+            setDatePickerVisibility(false)
           }}
           onCancel={() => {
-            setDatePickerVisibility(false);
+            setDatePickerVisibility(false)
           }}
         />
         
@@ -115,6 +115,12 @@ export default function TaskDetailScreen() {
           />
         </View>
 
+        <View>
+          {/**
+           * 하위 할 일 목록 및 추가 버튼
+           */}
+        </View>
+
         <Button
           title="Delete"
           color='red'
@@ -126,7 +132,7 @@ export default function TaskDetailScreen() {
         />
       </SafeAreaView>
     </TouchableWithoutFeedback>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -146,4 +152,4 @@ const styles = StyleSheet.create({
     padding: 8,
     justifyContent: 'center',
   },
-});
+})

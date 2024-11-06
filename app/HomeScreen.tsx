@@ -14,40 +14,40 @@ export default function HomeScreen() {
       tasks.filter(task =>
         task.id !== taskId
       )
-    );
-  };
+    )
+  }
 
-  const navigation = useNavigation();
-  const params = useRoute().params || {};
+  const navigation = useNavigation()
+  const params = useRoute().params || {}
 
   useEffect(() => {
-    const { updateTaskJSON = undefined, deletedTaskId = undefined } = params;
+    const { updateTaskJSON = undefined, deletedTaskId = undefined } = params
 
     if (updateTaskJSON) {
-      const updatedTask = JSON.parse(updateTaskJSON) as Task;
+      const updatedTask = JSON.parse(updateTaskJSON) as Task
 
-      const dueDate = updatedTask.dueDate !== undefined ? new Date(updatedTask.dueDate) : undefined;
+      const dueDate = updatedTask.dueDate !== undefined ? new Date(updatedTask.dueDate) : undefined
 
       const index = tasks.findIndex((task: Task) => {
-        return task.id === updatedTask.id;
-      });
+        return task.id === updatedTask.id
+      })
 
-      tasks[index] = updatedTask;
-      tasks[index].dueDate = dueDate;
+      tasks[index] = updatedTask
+      tasks[index].dueDate = dueDate
 
       navigation.setParams({
         updateTaskJSON: undefined
-      });
+      })
     }
     
     if (deletedTaskId) {
-      deleteTask(deletedTaskId);
+      deleteTask(deletedTaskId)
 
       navigation.setParams({
         deletedTaskId: undefined
-      });
+      })
     }
-  }, [params]);
+  }, [params])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -65,11 +65,11 @@ export default function HomeScreen() {
       />
       <TaskInputField
         onAdded={(task) => {
-          updateTasks([...tasks, task]);
+          updateTasks([...tasks, task])
         }}
       />
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({

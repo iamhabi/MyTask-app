@@ -5,16 +5,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function RegisterScreen() {
-  const [id, setID] = useState<string | undefined>(undefined);
-  const [email, setEmail] = useState<string | undefined>(undefined);
-  const [password1, setPassword1] = useState<string | undefined>(undefined);
-  const [password2, setPassword2] = useState<string | undefined>(undefined);
+  const [id, setID] = useState<string | undefined>(undefined)
+  const [email, setEmail] = useState<string | undefined>(undefined)
+  const [password1, setPassword1] = useState<string | undefined>(undefined)
+  const [password2, setPassword2] = useState<string | undefined>(undefined)
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const requestRegister = () => {
     // TODO Request register
-  };
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -29,7 +29,7 @@ export default function RegisterScreen() {
               justifyContent: 'center',
             }}
             onPress={() => {
-              navigation.goBack();
+              navigation.goBack()
             }}
           >
             <MaterialIcons name="chevron-left" />
@@ -88,7 +88,7 @@ export default function RegisterScreen() {
             }}
             underlayColor='#1166DD'
             onPress={() => {
-              requestRegister();
+              requestRegister()
             }}
           >
             <Text style={{ color: 'white' }}>Register</Text>
@@ -96,7 +96,7 @@ export default function RegisterScreen() {
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -116,4 +116,4 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 16,
   },
-});
+})
