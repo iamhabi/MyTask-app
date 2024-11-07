@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
@@ -13,14 +12,13 @@ export interface Task {
 };
 
 export type Props = {
-  task: Task;
+  task: Task
+  onClick: (task: Task) => void
   onDelete: (task: Task) => void
 }
 
-export default function TaskItem({ task, onDelete }: Props) {
+export default function TaskItem({ task, onClick, onDelete }: Props) {
   const [isChecked, setIsChecked] = useState(false);
-
-  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -41,7 +39,7 @@ export default function TaskItem({ task, onDelete }: Props) {
             flex: 1,
           }}
           onPress={() => {
-            navigation.navigate('Detail', { taskJSON: JSON.stringify(task) })
+            onClick(task)
           }}
         >
           <View style={styles.smallContainer}>
