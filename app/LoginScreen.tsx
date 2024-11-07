@@ -1,15 +1,28 @@
 import { CommonActions } from "@react-navigation/native";
 import { useState } from "react";
-import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
+
 import { useAppNavigation } from '@/types/navigation';
 import { ROUTES } from "@/constants/routes";
 
 export default function LoginScreen() {
+  const navigation = useAppNavigation()
+
   const [id, setID] = useState<string | undefined>(undefined)
   const [password, setPassword] = useState<string | undefined>(undefined)
 
-  const navigation = useAppNavigation()
+  const dispathToHome = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: ROUTES.HOME }
+        ]
+      })
+    )
+  }
   
   const requestLogin = () => {
     // TODO Request login
@@ -17,14 +30,7 @@ export default function LoginScreen() {
     const isLoginSuccess = true
     
     if (isLoginSuccess) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            { name: 'Home' }
-          ]
-        })
-      )
+      dispathToHome()
     } else {
       // TODO Do something if login failed
     }
@@ -33,6 +39,22 @@ export default function LoginScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
+        <View style={styles.topContainer}>
+          <Pressable
+            style={{
+              height: '100%',
+              aspectRatio: 1,
+              margin: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              navigation.goBack()
+            }}
+          >
+            <MaterialIcons name="chevron-left" />
+          </Pressable>
+        </View>
         <TextInput
           style={styles.inputFieldContainer}
           onChangeText={(text) => {
@@ -52,42 +74,22 @@ export default function LoginScreen() {
           placeholder="Password"
         />
 
-        <View style={{
-            margin: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
+        <TouchableHighlight
+          style={[
+            styles.buttonContainer,
+            {
+              margin: 16,
+              alignItems: 'center',
+              backgroundColor: '#0088FF',
+            }
+          ]}
+          underlayColor='#1166DD'
+          onPress={() => {
+            requestLogin()
           }}
         >
-          <TouchableHighlight
-            style={[
-              styles.buttonContainer,
-              {
-                borderWidth: 0.5,
-                backgroundColor: '#EEEEEE',
-              }
-            ]}
-            underlayColor='#CECECE'
-            onPress={() => {
-              navigation.navigate(ROUTES.REGISTER)
-            }}
-          >
-            <Text>Register</Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight
-            style={[
-              styles.buttonContainer,
-              { backgroundColor: '#0088FF', }
-            ]}
-            underlayColor='#1166DD'
-            onPress={() => {
-              requestLogin()
-            }}
-          >
-            <Text style={{ color: 'white' }}>Login</Text>
-          </TouchableHighlight>
-        </View>
+          <Text style={{ color: 'white' }}>Login</Text>
+        </TouchableHighlight>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   )
@@ -97,6 +99,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 8,
+  },
+  topContainer: {
+    height: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   inputFieldContainer: {
     borderWidth: 1,
