@@ -7,6 +7,10 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export const Colors = {
+  primary: '#0088FF',
+  delete: '#DD1111',
+  buttonClick: '#CECECE',
+  loginBtnUnderlay: '#1166DD',
   light: {
     text: '#11181C',
     background: '#fff',

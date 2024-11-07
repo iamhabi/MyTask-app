@@ -4,6 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Task } from "@/types/task";
+import { Colors } from "@/constants/Colors";
 
 export type Props = {
   task: Task
@@ -22,7 +23,7 @@ export default function TaskItem({ task, onClick, onDelete }: Props) {
       }}>
         <BouncyCheckbox
           disableText
-          fillColor="#0088FF"
+          fillColor={Colors.primary}
           onPress={(isChecked) => {
             setIsChecked(isChecked)
           }}
@@ -49,7 +50,7 @@ export default function TaskItem({ task, onClick, onDelete }: Props) {
             }}>
               <MaterialIcons
                 name="delete"
-                color='#DD1111'
+                color={Colors.delete}
                 size={20}
                 style={{ minWidth: '5%' }}
               />

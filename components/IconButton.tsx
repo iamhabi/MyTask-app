@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -20,7 +21,7 @@ export default function IconButton({ icon, size, onPress }: Props) {
         ]}
         onPress={onPress}
       >
-        <MaterialIcons name={icon} size={size / 1.5} color="#25292e" />
+        <MaterialIcons name={icon} size={size / 1.5} color='#000' />
       </Pressable>
     </View>
   );
@@ -35,6 +36,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DFDFDF',
+    backgroundColor: Colors.buttonClick,
   }
 });

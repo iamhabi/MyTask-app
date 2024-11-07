@@ -10,6 +10,7 @@ import SubTasksScreen from "./SubTasksScreen";
 import { DetailNavigationProp, DetailRouteProp } from "@/types/navigation";
 
 import { Task } from "@/types/task";
+import { Colors } from "@/constants/Colors";
 
 export default function TaskDetailScreen() {
   const navigation = useNavigation<DetailNavigationProp>()
@@ -137,7 +138,7 @@ export default function TaskDetailScreen() {
             height: 48,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#DD1111',
+            backgroundColor: Colors.delete,
             borderRadius: 8,
           }}
           onPress={() => {

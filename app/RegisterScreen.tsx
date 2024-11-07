@@ -3,6 +3,7 @@ import { Keyboard, StyleSheet, TouchableWithoutFeedback, TextInput, TouchableHig
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAppNavigation } from '@/types/navigation';
+import { Colors } from "@/constants/Colors";
 
 export default function RegisterScreen() {
   const [id, setID] = useState<string | undefined>(undefined)
@@ -37,7 +38,7 @@ export default function RegisterScreen() {
         </View>
 
         <TextInput
-          style={styles.inputFieldContainer}
+          style={styles.viewContainer}
           onChangeText={(text) => {
             setID(text !== '' ? text : undefined)
           }}
@@ -47,7 +48,7 @@ export default function RegisterScreen() {
         />
 
         <TextInput
-          style={styles.inputFieldContainer}
+          style={styles.viewContainer}
           onChangeText={(text) => {
             setEmail(text !== '' ? text : undefined)
           }}
@@ -56,7 +57,7 @@ export default function RegisterScreen() {
         />
 
         <TextInput
-          style={styles.inputFieldContainer}
+          style={styles.viewContainer}
           onChangeText={(text) => {
             setPassword1(text !== '' ? text : undefined)
           }}
@@ -65,7 +66,7 @@ export default function RegisterScreen() {
         />
 
         <TextInput
-          style={styles.inputFieldContainer}
+          style={styles.viewContainer}
           onChangeText={(text) => {
             setPassword2(text !== '' ? text : undefined)
           }}
@@ -73,27 +74,23 @@ export default function RegisterScreen() {
           placeholder="Repeat password"
         />
 
-        <View
-          style={{
-            margin: 16,
-            flexDirection: 'row-reverse',
-            alignItems: 'center',
+        <TouchableHighlight
+          style={[
+            styles.viewContainer,
+            {
+              borderWidth: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: Colors.primary,
+            }
+          ]}
+          underlayColor={Colors.loginBtnUnderlay}
+          onPress={() => {
+            requestRegister()
           }}
         >
-          <TouchableHighlight
-            style={{
-              padding: 8,
-              borderRadius: 8,
-              backgroundColor: '#0088FF'
-            }}
-            underlayColor='#1166DD'
-            onPress={() => {
-              requestRegister()
-            }}
-          >
-            <Text style={{ color: 'white' }}>Register</Text>
-          </TouchableHighlight>
-        </View>
+          <Text style={{ color: 'white' }}>Register</Text>
+        </TouchableHighlight>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   )
@@ -110,7 +107,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  inputFieldContainer: {
+  viewContainer: {
+    minHeight: 48,
     borderWidth: 1,
     borderRadius: 8,
     padding: 8,

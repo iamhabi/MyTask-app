@@ -6,6 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import { useAppNavigation } from '@/types/navigation';
 import { ROUTES } from "@/constants/routes";
+import { Colors } from "@/constants/Colors";
 
 export default function LoginScreen() {
   const navigation = useAppNavigation()
@@ -55,8 +56,9 @@ export default function LoginScreen() {
             <MaterialIcons name="chevron-left" />
           </Pressable>
         </View>
+
         <TextInput
-          style={styles.inputFieldContainer}
+          style={styles.viewContainer}
           onChangeText={(text) => {
             setID(text !== '' ? text : undefined)
           }}
@@ -66,7 +68,7 @@ export default function LoginScreen() {
         />
 
         <TextInput
-          style={styles.inputFieldContainer}
+          style={styles.viewContainer}
           onChangeText={(text) => {
             setPassword(text !== '' ? text : undefined)
           }}
@@ -76,14 +78,15 @@ export default function LoginScreen() {
 
         <TouchableHighlight
           style={[
-            styles.buttonContainer,
+            styles.viewContainer,
             {
-              margin: 16,
+              borderWidth: 0,
               alignItems: 'center',
-              backgroundColor: '#0088FF',
+              justifyContent: 'center',
+              backgroundColor: Colors.primary,
             }
           ]}
-          underlayColor='#1166DD'
+          underlayColor={Colors.loginBtnUnderlay}
           onPress={() => {
             requestLogin()
           }}
@@ -106,14 +109,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  inputFieldContainer: {
+  viewContainer: {
+    minHeight: 48,
     borderWidth: 1,
     borderRadius: 8,
     padding: 8,
     margin: 16,
-  },
-  buttonContainer: {
-    borderRadius: 8,
-    padding: 8,
   },
 })
