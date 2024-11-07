@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Button, Keyboard, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from "@expo/vector-icons";
 
 import DateTimePicker from "react-native-modal-datetime-picker";
 
 import { Task } from "@/components/TaskItem";
+import SubTasksScreen from "./SubTasksScreen";
 
 export default function TaskDetailScreen() {
   const navigation = useNavigation()
@@ -31,13 +32,12 @@ export default function TaskDetailScreen() {
               height: '100%',
               aspectRatio: 1,
               margin: 4,
-              alignItems: 'center',
               justifyContent: 'center',
             }}
             onPress={() => {
-              navigation.navigate('Home', {
-                updateTaskJSON: JSON.stringify(task)
-              })
+              // TODO Update task list
+              
+              navigation.goBack()
             }}
           >
             <MaterialIcons name="chevron-left" />
@@ -46,7 +46,13 @@ export default function TaskDetailScreen() {
           {
             isEdited ? (
               <Pressable
-                style={{ aspectRatio: 1, margin: 4 }}
+                style={{
+                  height: '100%',
+                  aspectRatio: 1,
+                  margin: 4,
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                }}
                 onPress={() => {
                   updateTask({
                     id: task.id,
@@ -115,21 +121,31 @@ export default function TaskDetailScreen() {
           />
         </View>
 
-        <View>
-          {/**
-           * 하위 할 일 목록 및 추가 버튼
-           */}
+        <View
+          style={{
+            flex: 1,
+            marginVertical: 8,
+          }}
+        >
+          <SubTasksScreen />
         </View>
 
-        <Button
-          title="Delete"
-          color='red'
-          onPress={() => {
-            navigation.navigate('Home', {
-              deletedTaskId: task.id
-            })
+        <Pressable
+          style={{
+            height: 48,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#DD1111',
+            borderRadius: 8,
           }}
-        />
+          onPress={() => {
+            // TODO Update task list
+
+            navigation.goBack()
+          }}
+        >
+          <Text>Delete</Text>
+        </Pressable>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   )
@@ -143,7 +159,7 @@ const styles = StyleSheet.create({
   topContainer: {
     height: 48,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignContent: 'center',
     justifyContent: 'space-between',
   },
   baseContainer: {
