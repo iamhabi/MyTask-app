@@ -4,7 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
 import IconButton from "./IconButton";
-import { Task } from "./TaskItem";
+import { Task } from "@/types/task";
 
 type Props = {
   onAdded: (task: Task) => void;
@@ -69,7 +69,13 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
               return;
             }
 
-            onTaskAdded({id: Math.floor(Math.random() * 256), title: title, description: description, dueDate: dueDate});
+            onTaskAdded({
+              id: Math.floor(Math.random() * 256),
+              parent_id: undefined,
+              title: title,
+              description: description,
+              dueDate: dueDate
+            });
 
             setTitle('');
             setDescription(undefined);

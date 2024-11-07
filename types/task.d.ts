@@ -1,6 +1,8 @@
 export interface Task {
-  id: number;
-  title: string;
-  description: string | undefined;
-  dueDate: Date | undefined;
-};
+  id: number
+  parent_id: number | undefined
+  title: string
+  description: string | undefined
+  dueDate: Date | undefined
+}
+
