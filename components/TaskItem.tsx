@@ -3,13 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-
-export interface Task {
-  id: number;
-  title: string;
-  description: string | undefined;
-  dueDate: Date | undefined;
-};
+import { Task } from "@/types/task";
 
 export type Props = {
   task: Task

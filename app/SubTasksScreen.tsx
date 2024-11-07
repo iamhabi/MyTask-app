@@ -1,11 +1,14 @@
-import TaskItem, { Task } from "@/components/TaskItem";
 import { useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
+import { useAppNavigation } from "./_layout";
+
 import TaskInputField from '@/components/TaskInputField';
-import { useNavigation } from "@react-navigation/native";
+import TaskItem from "@/components/TaskItem";
+
+import { Task } from "@/types/task";
 
 export default function SubTasksScreen() {
-  const navigation = useNavigation();
+  const navigation = useAppNavigation()
   const [subTasks, updateSubTasks] = useState(Array<Task>);
 
   return (

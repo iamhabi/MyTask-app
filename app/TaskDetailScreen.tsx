@@ -6,12 +6,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import DateTimePicker from "react-native-modal-datetime-picker";
 
-import { Task } from "@/components/TaskItem";
 import SubTasksScreen from "./SubTasksScreen";
+import { DetailNavigationProp, DetailRouteProp } from "./_layout";
+
+import { Task } from "@/types/task";
 
 export default function TaskDetailScreen() {
-  const navigation = useNavigation()
-  const route = useRoute()
+  const navigation = useNavigation<DetailNavigationProp>()
+  const route = useRoute<DetailRouteProp>()
   const { taskJSON } = route.params
   const [task, updateTask] = useState<Task>(JSON.parse(taskJSON) as Task)
 
@@ -36,7 +38,7 @@ export default function TaskDetailScreen() {
             }}
             onPress={() => {
               // TODO Update task list
-              
+
               navigation.goBack()
             }}
           >

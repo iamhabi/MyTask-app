@@ -1,13 +1,14 @@
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 import { useState } from "react";
 import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAppNavigation } from "./_layout";
 
 export default function LoginScreen() {
   const [id, setID] = useState<string | undefined>(undefined)
   const [password, setPassword] = useState<string | undefined>(undefined)
 
-  const navigation = useNavigation()
+  const navigation = useAppNavigation()
   
   const requestLogin = () => {
     // TODO Request login
@@ -67,7 +68,7 @@ export default function LoginScreen() {
             ]}
             underlayColor='#CECECE'
             onPress={() => {
-              navigation.navigate('Register', {})
+              navigation.navigate('Register')
             }}
           >
             <Text>Register</Text>

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigation } from "@react-navigation/native";
 import { FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import TaskInputField from '@/components/TaskInputField';
-import TaskItem, { Task } from '@/components/TaskItem';
+import TaskItem from '@/components/TaskItem';
+import { useAppNavigation } from './_layout';
+import { Task } from "@/types/task";
 
 export default function HomeScreen() {
-  const navigation = useNavigation()
+  const navigation = useAppNavigation()
   
   const [tasks, updateTasks] = useState(Array<Task>)
 

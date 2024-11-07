@@ -1,8 +1,8 @@
-import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, TextInput, TouchableHighlight, View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useAppNavigation } from "./_layout";
 
 export default function RegisterScreen() {
   const [id, setID] = useState<string | undefined>(undefined)
@@ -10,7 +10,7 @@ export default function RegisterScreen() {
   const [password1, setPassword1] = useState<string | undefined>(undefined)
   const [password2, setPassword2] = useState<string | undefined>(undefined)
 
-  const navigation = useNavigation()
+  const navigation = useAppNavigation()
 
   const requestRegister = () => {
     // TODO Request register
