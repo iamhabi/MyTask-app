@@ -9,6 +9,7 @@ import RegisterScreen from './RegisterScreen';
 
 import { RootStackParamList } from '@/types/navigation';
 import { ROUTES } from '@/constants/routes';
+import MainScreen from './MainScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -22,6 +23,10 @@ export default function RootLayout() {
           initialRouteName={initialRouteName}
           screenOptions={{ headerShown: false }}
         >
+          <Stack.Screen
+            name={ROUTES.MAIN}
+            component={MainScreen}
+          />
           <Stack.Screen
             name={ROUTES.LOGIN}
             component={LoginScreen}
@@ -45,9 +50,9 @@ export default function RootLayout() {
 }
 
 function getInitialRouteName() {
-  return isLoginValid() ? ROUTES.HOME : ROUTES.LOGIN
+  return isLoginValid() ? ROUTES.HOME : ROUTES.MAIN
 }
 
 function isLoginValid() {
-  return true
+  return false
 }
