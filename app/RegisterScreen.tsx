@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, TextInput, TouchableHighlight, View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useAppNavigation } from "./_layout";
+import { useAppNavigation } from '@/types/navigation';
 
 export default function RegisterScreen() {
   const [id, setID] = useState<string | undefined>(undefined)

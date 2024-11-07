@@ -7,20 +7,10 @@ import TaskDetailScreen from './TaskDetailScreen';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 
-export type RootStackParamList = {
-  Login: undefined
-  Register: undefined
-  Home: undefined
-  Detail: {
-    taskJSON: string
-  }
-}
-
-export type DetailNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Detail'>
-export type DetailRouteProp = RouteProp<RootStackParamList, 'Detail'>
+import { RootStackParamList } from '@/types/navigation';
+import { ROUTES } from '@/constants/routes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
-export const useAppNavigation = () => useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
 export default function RootLayout() {
   const initialRouteName = getInitialRouteName()
@@ -33,19 +23,19 @@ export default function RootLayout() {
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen
-            name='Login'
+            name={ROUTES.LOGIN}
             component={LoginScreen}
           />
           <Stack.Screen
-            name='Register'
+            name={ROUTES.REGISTER}
             component={RegisterScreen}
           />
           <Stack.Screen
-            name='Home'
+            name={ROUTES.HOME}
             component={HomeScreen}
           />
           <Stack.Screen
-            name='Detail'
+            name={ROUTES.DETAIL}
             component={TaskDetailScreen}
           />
         </Stack.Navigator>
@@ -55,7 +45,7 @@ export default function RootLayout() {
 }
 
 function getInitialRouteName() {
-  return isLoginValid() ? 'Home' : 'Login'
+  return isLoginValid() ? ROUTES.HOME : ROUTES.LOGIN
 }
 
 function isLoginValid() {

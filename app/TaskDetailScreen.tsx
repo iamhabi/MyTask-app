@@ -7,7 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
 import SubTasksScreen from "./SubTasksScreen";
-import { DetailNavigationProp, DetailRouteProp } from "./_layout";
+import { DetailNavigationProp, DetailRouteProp } from "@/types/navigation";
 
 import { Task } from "@/types/task";
 

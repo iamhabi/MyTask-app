@@ -2,7 +2,8 @@ import { CommonActions } from "@react-navigation/native";
 import { useState } from "react";
 import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAppNavigation } from "./_layout";
+import { useAppNavigation } from '@/types/navigation';
+import { ROUTES } from "@/constants/routes";
 
 export default function LoginScreen() {
   const [id, setID] = useState<string | undefined>(undefined)
@@ -68,7 +69,7 @@ export default function LoginScreen() {
             ]}
             underlayColor='#CECECE'
             onPress={() => {
-              navigation.navigate('Register')
+              navigation.navigate(ROUTES.REGISTER)
             }}
           >
             <Text>Register</Text>

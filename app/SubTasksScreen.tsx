@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { useAppNavigation } from "./_layout";
+import { useAppNavigation } from '@/types/navigation';
 
 import TaskInputField from '@/components/TaskInputField';
 import TaskItem from "@/components/TaskItem";
 
 import { Task } from "@/types/task";
+import { ROUTES } from "@/constants/routes";
 
 export default function SubTasksScreen() {
   const navigation = useAppNavigation()
@@ -23,7 +24,7 @@ export default function SubTasksScreen() {
           <TaskItem
             task={item.item}
             onClick={(task) => {
-              navigation.push('Detail', {
+              navigation.push(ROUTES.DETAIL, {
                 taskJSON: JSON.stringify(task)
               })
             }}
