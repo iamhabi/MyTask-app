@@ -4,13 +4,16 @@ import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
 import IconButton from "./IconButton";
-import { Task } from "@/types/task";
 
 type Props = {
-  onAdded: (task: Task) => void;
+  onCreate: (
+    title: string,
+    description: string | undefined,
+    dueDate: Date | undefined
+  ) => void
 }
 
-export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
+export default function TaskInputField({ onCreate }: Props) {
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [description, setDescription] = useState<string | undefined>(undefined);
@@ -33,12 +36,12 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
             isVisible={isDatePickerVisible}
             mode="datetime"
             onConfirm={(date) => {
-              setDueDate(date);
+              setDueDate(date)
 
-              setDatePickerVisibility(false);
+              setDatePickerVisibility(false)
             }}
             onCancel={() => {
-              setDatePickerVisibility(false);
+              setDatePickerVisibility(false)
             }}
           />
         </Pressable>
@@ -64,23 +67,17 @@ export default function TaskInputField({ onAdded: onTaskAdded }: Props) {
           size={48}
           onPress={() => {
             if (title === '') {
-              alert('Please input task');
+              alert('Please input task')
 
-              return;
+              return
             }
 
-            onTaskAdded({
-              id: Math.floor(Math.random() * 256),
-              parent_id: undefined,
-              title: title,
-              description: description,
-              dueDate: dueDate
-            });
+            onCreate(title, description, dueDate)
 
-            setTitle('');
-            setDescription(undefined);
-            setDueDate(undefined);
-            setDescriptionVisibility(false);
+            setTitle('')
+            setDescription(undefined)
+            setDueDate(undefined)
+            setDescriptionVisibility(false)
           }}
         />
       </View>

@@ -5,8 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import TaskInputField from '@/components/TaskInputField';
 import TaskItem from '@/components/TaskItem';
 import { useAppNavigation } from '@/types/navigation';
-import { Task } from "@/types/task";
+import {  Task } from "@/types/task";
 import { ROUTES } from '@/constants/routes';
+import { createTask } from '@/utils/utils';
 
 export default function HomeScreen() {
   const navigation = useAppNavigation()
@@ -41,7 +42,9 @@ export default function HomeScreen() {
         }
       />
       <TaskInputField
-        onAdded={(task) => {
+        onCreate={(title, description, dueDate) => {
+          const task = createTask(undefined, title, description, dueDate)
+
           updateTasks([...tasks, task])
         }}
       />

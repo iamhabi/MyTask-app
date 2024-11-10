@@ -7,6 +7,7 @@ import TaskItem from "@/components/TaskItem";
 
 import { Task } from "@/types/task";
 import { ROUTES } from "@/constants/routes";
+import { createTask } from "@/utils/utils";
 
 export default function SubTasksScreen() {
   const navigation = useAppNavigation()
@@ -34,8 +35,11 @@ export default function SubTasksScreen() {
           />
         }
       />
+      
       <TaskInputField
-        onAdded={(task) => {
+        onCreate={(title, description, dueDate) => {
+          const task = createTask(undefined, title, description, dueDate)
+
           updateSubTasks([...subTasks, task])
         }}
       />
