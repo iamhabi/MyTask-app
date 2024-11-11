@@ -14,7 +14,7 @@ export default function HomeScreen() {
   
   const [tasks, updateTasks] = useState(Array<Task>)
 
-  const deleteTask = (taskId: number) => {
+  const deleteTask = (taskId: string) => {
     updateTasks(
       tasks.filter(task =>
         task.id !== taskId

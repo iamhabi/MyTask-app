@@ -1,5 +1,5 @@
 export type Task = {
-  id: number
+  id: string
   parent_id: number | undefined
   title: string
   description: string | undefined
