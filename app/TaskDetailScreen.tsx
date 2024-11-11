@@ -34,12 +34,7 @@ export default function TaskDetailScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.topContainer}>
           <Pressable
-            style={{
-              height: '100%',
-              aspectRatio: 1,
-              margin: 4,
-              justifyContent: 'center',
-            }}
+            style={styles.button}
             onPress={() => {
               navigation.goBack()
             }}
@@ -47,16 +42,12 @@ export default function TaskDetailScreen() {
             <MaterialIcons name="chevron-left" />
           </Pressable>
 
+          <View style={{ flex: 1 }} />
+
           {
             isEdited ? (
               <Pressable
-                style={{
-                  height: '100%',
-                  aspectRatio: 1,
-                  margin: 4,
-                  alignItems: 'flex-end',
-                  justifyContent: 'center',
-                }}
+                style={styles.button}
                 onPress={() => {
                   task.title = title
                   task.description = description
@@ -71,6 +62,22 @@ export default function TaskDetailScreen() {
               </Pressable>
             ) : null
           }
+
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              deleteTask(task.id)
+
+              navigation.goBack()
+            }}
+          >
+            <MaterialIcons
+              name="delete"
+              color={Colors.delete}
+              size={20}
+              style={{ minWidth: '5%' }}
+            />
+          </Pressable>
         </View>
 
         <View style={styles.baseContainer}>
@@ -132,23 +139,6 @@ export default function TaskDetailScreen() {
         >
           <SubTasksScreen parent_id={task.id} />
         </View>
-
-        <Pressable
-          style={{
-            height: 48,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: Colors.delete,
-            borderRadius: 8,
-          }}
-          onPress={() => {
-            deleteTask(task.id)
-
-            navigation.goBack()
-          }}
-        >
-          <Text>Delete</Text>
-        </Pressable>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   )
@@ -160,10 +150,15 @@ const styles = StyleSheet.create({
     margin: 8,
   },
   topContainer: {
+    width: '100%',
     height: 48,
     flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'space-between',
+  },
+  button: {
+    height: '100%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   baseContainer: {
     minHeight: 48,

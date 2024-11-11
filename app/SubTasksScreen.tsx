@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useAppNavigation } from '@/types/navigation';
 
 import TaskInputField from '@/components/TaskInputField';
@@ -18,30 +18,39 @@ export default function SubTasksScreen({ parent_id }: Props) {
 
   const { tasks, addTask, deleteTask } = useTaskContext()
 
+  const subTasks = tasks.filter(task => task.parent_id === parent_id)
+
+  const isEmpty = subTasks.length === 0
+
   return (
     <View style={styles.container}>
-      <FlatList
-        style={{
-          flex: 1,
-          marginStart: 16,
-        }}
-        data={
-          tasks.filter(task => task.parent_id === parent_id)
-        }
-        renderItem={(item) => 
-          <TaskItem
-            task={item.item}
-            onClick={(task) => {
-              navigation.push(ROUTES.DETAIL, {
-                taskJSON: JSON.stringify(task)
-              })
-            }}
-            onDelete={(deletedTask: Task) => {
-              deleteTask(deletedTask.id)
-            }}
+      {
+        !isEmpty ? (
+          <FlatList
+            style={styles.listContainer}
+            data={subTasks}
+            renderItem={(item) => 
+              <TaskItem
+                task={item.item}
+                onClick={(task) => {
+                  navigation.push(ROUTES.DETAIL, {
+                    taskJSON: JSON.stringify(task)
+                  })
+                }}
+                onDelete={(deletedTask: Task) => {
+                  deleteTask(deletedTask.id)
+                }}
+              />
+            }
           />
-        }
-      />
+        ) : (
+          <View style={styles.listContainer}>
+            <Text>
+              No subtasks
+            </Text>
+          </View>
+        )
+      }
       
       <TaskInputField
         onCreate={(title, description, dueDate) => {
@@ -55,5 +64,9 @@ export default function SubTasksScreen({ parent_id }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  listContainer: {
+    flex: 1,
+    marginStart: 16,
   }
 });
