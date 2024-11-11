@@ -37,6 +37,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
       parent_id: parent_id,
       title: title,
       description: description,
+      completed: false,
       dueDate: dueDate
     }
 
@@ -44,17 +45,15 @@ export function TaskProvider({ children }: TaskProviderProps) {
   }
 
   const toggleTask = (id: string) => {
-    console.log('toggle: ' + id)
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ))
   }
 
   const updateTask = (newTask: Task) => {
-    const index = tasks.findIndex((task: Task) => {
-      return task.id === newTask.id
-    })
-
-    tasks[index] = newTask
-    
-    setTasks([...tasks])
+    setTasks(tasks.map(task =>
+      task.id === newTask.id ? newTask : task
+    ))
   }
 
   const deleteTask = (id: string) => {
