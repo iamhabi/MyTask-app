@@ -11,6 +11,7 @@ import { DetailNavigationProp, DetailRouteProp } from "@/types/navigation";
 
 import { Task } from "@/types/task";
 import { Colors } from "@/constants/Colors";
+import { createTask } from "@/utils/utils";
 
 export default function TaskDetailScreen() {
   const navigation = useNavigation<DetailNavigationProp>()
@@ -57,12 +58,9 @@ export default function TaskDetailScreen() {
                   justifyContent: 'center',
                 }}
                 onPress={() => {
-                  updateTask({
-                    id: task.id,
-                    title: title,
-                    description: description,
-                    dueDate: dueDate
-                  })
+                  const newTask = createTask(task.parent_id, title, description, dueDate)
+                  
+                  updateTask(newTask)
 
                   Keyboard.dismiss()
                 }}
