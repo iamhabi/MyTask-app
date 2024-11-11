@@ -11,7 +11,7 @@ import { Colors } from "@/constants/Colors";
 export default function LoginScreen() {
   const navigation = useAppNavigation()
 
-  const [id, setID] = useState<string | undefined>(undefined)
+  const [username, setUsername] = useState<string | undefined>(undefined)
   const [password, setPassword] = useState<string | undefined>(undefined)
 
   const dispathToHome = () => {
@@ -60,10 +60,10 @@ export default function LoginScreen() {
         <TextInput
           style={styles.viewContainer}
           onChangeText={(text) => {
-            setID(text !== '' ? text : undefined)
+            setUsername(text !== '' ? text : undefined)
           }}
-          value={id}
-          placeholder="ID"
+          value={username}
+          placeholder="Username"
           autoFocus
         />
 

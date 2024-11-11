@@ -6,7 +6,7 @@ import { useAppNavigation } from '@/types/navigation';
 import { Colors } from "@/constants/Colors";
 
 export default function RegisterScreen() {
-  const [id, setID] = useState<string | undefined>(undefined)
+  const [username, setUsername] = useState<string | undefined>(undefined)
   const [email, setEmail] = useState<string | undefined>(undefined)
   const [password1, setPassword1] = useState<string | undefined>(undefined)
   const [password2, setPassword2] = useState<string | undefined>(undefined)
@@ -40,10 +40,10 @@ export default function RegisterScreen() {
         <TextInput
           style={styles.viewContainer}
           onChangeText={(text) => {
-            setID(text !== '' ? text : undefined)
+            setUsername(text !== '' ? text : undefined)
           }}
-          value={id}
-          placeholder="ID"
+          value={username}
+          placeholder="Username"
           autoFocus
         />
 
