@@ -55,7 +55,7 @@ export default function TaskInputField({ onCreate }: Props) {
 
       <View style={styles.newTaskContainer}>
         <TextInput
-          style={{ flex: 1 }}
+          style={{ flex: 1, height: '90%', }}
           onChangeText={setTitle}
           value={title}
           numberOfLines={1}
