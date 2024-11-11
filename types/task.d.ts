@@ -5,4 +5,5 @@ export type Task = {
   description: string | undefined
   completed: boolean
   dueDate: Date | undefined
+  created: Date
 }

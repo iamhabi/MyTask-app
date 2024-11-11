@@ -38,7 +38,8 @@ export function TaskProvider({ children }: TaskProviderProps) {
       title: title,
       description: description,
       completed: false,
-      dueDate: dueDate
+      dueDate: dueDate,
+      created: new Date()
     }
 
     setTasks([...tasks, newTask])
