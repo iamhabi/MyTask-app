@@ -7,11 +7,16 @@ import TaskItem from "@/components/TaskItem";
 
 import { Task } from "@/types/task";
 import { ROUTES } from "@/constants/routes";
-import { createTask } from "@/utils/utils";
+import { useTaskContext } from "@/hooks/TaskContext";
 
-export default function SubTasksScreen() {
+export type Props = {
+  parent_id: string | undefined
+}
+
+export default function SubTasksScreen({ parent_id }: Props) {
   const navigation = useAppNavigation()
-  const [subTasks, updateSubTasks] = useState(Array<Task>);
+
+  const { tasks, addTask, deleteTask } = useTaskContext()
 
   return (
     <View style={styles.container}>
@@ -20,7 +25,9 @@ export default function SubTasksScreen() {
           flex: 1,
           marginStart: 16,
         }}
-        data={subTasks}
+        data={
+          tasks.filter(task => task.parent_id === parent_id)
+        }
         renderItem={(item) => 
           <TaskItem
             task={item.item}
@@ -29,8 +36,8 @@ export default function SubTasksScreen() {
                 taskJSON: JSON.stringify(task)
               })
             }}
-            onDelete={(deletedTask) => {
-              
+            onDelete={(deletedTask: Task) => {
+              deleteTask(deletedTask.id)
             }}
           />
         }
@@ -38,9 +45,7 @@ export default function SubTasksScreen() {
       
       <TaskInputField
         onCreate={(title, description, dueDate) => {
-          const task = createTask(undefined, title, description, dueDate)
-
-          updateSubTasks([...subTasks, task])
+          addTask(parent_id, title, description, dueDate)
         }}
       />
     </View>

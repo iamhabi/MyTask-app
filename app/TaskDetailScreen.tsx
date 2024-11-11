@@ -11,13 +11,15 @@ import { DetailNavigationProp, DetailRouteProp } from "@/types/navigation";
 
 import { Task } from "@/types/task";
 import { Colors } from "@/constants/Colors";
-import { createTask } from "@/utils/utils";
+import { useTaskContext } from "@/hooks/TaskContext";
 
 export default function TaskDetailScreen() {
   const navigation = useNavigation<DetailNavigationProp>()
   const route = useRoute<DetailRouteProp>()
   const { taskJSON } = route.params
-  const [task, updateTask] = useState<Task>(JSON.parse(taskJSON) as Task)
+  const [task, _] = useState<Task>(JSON.parse(taskJSON) as Task)
+
+  const { updateTask, deleteTask } = useTaskContext()
 
   const [title, setTitle] = useState<string>(task.title)
   const [description, setDescription] = useState<string | undefined>(task.description !== undefined ? task.description : undefined)
@@ -39,8 +41,6 @@ export default function TaskDetailScreen() {
               justifyContent: 'center',
             }}
             onPress={() => {
-              // TODO Update task list
-
               navigation.goBack()
             }}
           >
@@ -58,9 +58,11 @@ export default function TaskDetailScreen() {
                   justifyContent: 'center',
                 }}
                 onPress={() => {
-                  const newTask = createTask(task.parent_id, title, description, dueDate)
-                  
-                  updateTask(newTask)
+                  task.title = title
+                  task.description = description
+                  task.dueDate = dueDate
+
+                  updateTask(task)
 
                   Keyboard.dismiss()
                 }}
@@ -128,7 +130,7 @@ export default function TaskDetailScreen() {
             marginVertical: 8,
           }}
         >
-          <SubTasksScreen />
+          <SubTasksScreen parent_id={task.id} />
         </View>
 
         <Pressable
@@ -140,7 +142,7 @@ export default function TaskDetailScreen() {
             borderRadius: 8,
           }}
           onPress={() => {
-            // TODO Update task list
+            deleteTask(task.id)
 
             navigation.goBack()
           }}

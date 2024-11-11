@@ -10,6 +10,7 @@ import RegisterScreen from './RegisterScreen';
 import { RootStackParamList } from '@/types/navigation';
 import { ROUTES } from '@/constants/routes';
 import MainScreen from './MainScreen';
+import { TaskProvider } from '@/hooks/TaskContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -17,35 +18,37 @@ export default function RootLayout() {
   const initialRouteName = getInitialRouteName()
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer independent={true}>
-        <Stack.Navigator
-          initialRouteName={initialRouteName}
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen
-            name={ROUTES.MAIN}
-            component={MainScreen}
-          />
-          <Stack.Screen
-            name={ROUTES.LOGIN}
-            component={LoginScreen}
-          />
-          <Stack.Screen
-            name={ROUTES.REGISTER}
-            component={RegisterScreen}
-          />
-          <Stack.Screen
-            name={ROUTES.HOME}
-            component={HomeScreen}
-          />
-          <Stack.Screen
-            name={ROUTES.DETAIL}
-            component={TaskDetailScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <TaskProvider>
+      <SafeAreaProvider>
+        <NavigationContainer independent={true}>
+          <Stack.Navigator
+            initialRouteName={initialRouteName}
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen
+              name={ROUTES.MAIN}
+              component={MainScreen}
+            />
+            <Stack.Screen
+              name={ROUTES.LOGIN}
+              component={LoginScreen}
+            />
+            <Stack.Screen
+              name={ROUTES.REGISTER}
+              component={RegisterScreen}
+            />
+            <Stack.Screen
+              name={ROUTES.HOME}
+              component={HomeScreen}
+            />
+            <Stack.Screen
+              name={ROUTES.DETAIL}
+              component={TaskDetailScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </TaskProvider>
   )
 }
 
