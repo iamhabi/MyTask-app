@@ -7,12 +7,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useAppNavigation } from '@/types/navigation';
 import { ROUTES } from "@/constants/routes";
 import { Colors } from "@/constants/Colors";
+import { useServerContext } from "@/hooks/ServerContext";
 
 export default function LoginScreen() {
   const navigation = useAppNavigation()
 
-  const [username, setUsername] = useState<string | undefined>(undefined)
-  const [password, setPassword] = useState<string | undefined>(undefined)
+  const [username, setUsername] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+
+  const serverContext = useServerContext()
 
   const dispathToHome = () => {
     navigation.dispatch(
@@ -26,15 +29,17 @@ export default function LoginScreen() {
   }
   
   const requestLogin = () => {
-    // TODO Request login
+    serverContext.login(
+      username, password,
+      (access, refresh, user_id) => {
+        dispathToHome()
+      },
+      (error) => {
+        console.log(error)
 
-    const isLoginSuccess = true
-    
-    if (isLoginSuccess) {
-      dispathToHome()
-    } else {
-      // TODO Do something if login failed
-    }
+        // TODO do something when login failed
+      },
+    )
   }
 
   return (
@@ -59,9 +64,7 @@ export default function LoginScreen() {
 
         <TextInput
           style={styles.viewContainer}
-          onChangeText={(text) => {
-            setUsername(text !== '' ? text : undefined)
-          }}
+          onChangeText={setUsername}
           value={username}
           placeholder="Username"
           autoFocus
@@ -69,11 +72,10 @@ export default function LoginScreen() {
 
         <TextInput
           style={styles.viewContainer}
-          onChangeText={(text) => {
-            setPassword(text !== '' ? text : undefined)
-          }}
+          onChangeText={setPassword}
           value={password}
           placeholder="Password"
+          secureTextEntry={true}
         />
 
         <TouchableHighlight

@@ -4,17 +4,55 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAppNavigation } from '@/types/navigation';
 import { Colors } from "@/constants/Colors";
+import { useServerContext } from "@/hooks/ServerContext";
+import { CommonActions } from "@react-navigation/native";
+import { ROUTES } from "@/constants/routes";
 
 export default function RegisterScreen() {
-  const [username, setUsername] = useState<string | undefined>(undefined)
-  const [email, setEmail] = useState<string | undefined>(undefined)
-  const [password1, setPassword1] = useState<string | undefined>(undefined)
-  const [password2, setPassword2] = useState<string | undefined>(undefined)
+  const [username, setUsername] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [password1, setPassword1] = useState<string>('')
+  const [password2, setPassword2] = useState<string>('')
 
   const navigation = useAppNavigation()
 
+  const serverContext = useServerContext()
+
+  const dispathToHome = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: ROUTES.HOME }
+        ]
+      })
+    )
+  }
+  
   const requestRegister = () => {
-    // TODO Request register
+    serverContext.register(
+      username, email, password1, password2,
+      () => {
+        console.log('register success')
+
+        serverContext.login(
+          username, password1,
+          (access, refresh, user_id) => {
+            dispathToHome()
+          },
+          (error) => {
+            console.log(error)
+    
+            // TODO do something when login failed
+          },
+        )
+      },
+      (error) => {
+        console.log(error)
+
+        // TODO do something when register failed
+      },
+    )
   }
 
   return (
@@ -39,9 +77,7 @@ export default function RegisterScreen() {
 
         <TextInput
           style={styles.viewContainer}
-          onChangeText={(text) => {
-            setUsername(text !== '' ? text : undefined)
-          }}
+          onChangeText={setUsername}
           value={username}
           placeholder="Username"
           autoFocus
@@ -49,29 +85,25 @@ export default function RegisterScreen() {
 
         <TextInput
           style={styles.viewContainer}
-          onChangeText={(text) => {
-            setEmail(text !== '' ? text : undefined)
-          }}
+          onChangeText={setEmail}
           value={email}
           placeholder="E-mail"
         />
 
         <TextInput
           style={styles.viewContainer}
-          onChangeText={(text) => {
-            setPassword1(text !== '' ? text : undefined)
-          }}
+          onChangeText={setPassword1}
           value={password1}
           placeholder="Password"
+          secureTextEntry={true}
         />
 
         <TextInput
           style={styles.viewContainer}
-          onChangeText={(text) => {
-            setPassword2(text !== '' ? text : undefined)
-          }}
+          onChangeText={setPassword2}
           value={password2}
           placeholder="Repeat password"
+          secureTextEntry={true}
         />
 
         <TouchableHighlight
