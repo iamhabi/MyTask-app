@@ -1,6 +1,6 @@
 import { CommonActions } from "@react-navigation/native";
 import { useState } from "react";
-import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View, Pressable } from "react-native";
+import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View, Pressable, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -14,6 +14,10 @@ export default function LoginScreen() {
 
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+
+  const [errorMessage, setErrorMessage] = useState<string>('')
+
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const serverContext = useServerContext()
 
@@ -29,15 +33,21 @@ export default function LoginScreen() {
   }
   
   const requestLogin = () => {
+    setIsLoading(true)
+
     serverContext.login(
       username, password,
       (access, refresh, user_id) => {
+        setIsLoading(false)
+
         dispathToHome()
       },
       (error) => {
-        console.log(error)
+        setIsLoading(false)
 
-        // TODO do something when login failed
+        if (error.hasOwnProperty('detail')) {
+          setErrorMessage(error.detail)
+        }
       },
     )
   }
@@ -78,6 +88,12 @@ export default function LoginScreen() {
           secureTextEntry={true}
         />
 
+        {
+          errorMessage !== '' ? (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          ) : null
+        }
+        
         <TouchableHighlight
           style={[
             styles.viewContainer,
@@ -90,10 +106,18 @@ export default function LoginScreen() {
           ]}
           underlayColor={Colors.loginBtnUnderlay}
           onPress={() => {
-            requestLogin()
+            if (!isLoading) {
+              requestLogin()
+            }
           }}
         >
-          <Text style={{ color: 'white' }}>Login</Text>
+          {
+            !isLoading ? (
+              <Text style={{ color: 'white' }}>Login</Text>
+            ) : (
+              <ActivityIndicator color='white' />
+            )
+          }
         </TouchableHighlight>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -118,4 +142,9 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 16,
   },
+  errorMessage: {
+    minHeight: 24,
+    color: 'red',
+    paddingStart: 16,
+  }
 })

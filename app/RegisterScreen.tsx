@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, TextInput, TouchableHighlight, View, Text, Pressable } from "react-native";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, TextInput, TouchableHighlight, View, Text, Pressable, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAppNavigation } from '@/types/navigation';
@@ -13,6 +13,12 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState<string>('')
   const [password1, setPassword1] = useState<string>('')
   const [password2, setPassword2] = useState<string>('')
+
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState<string>('')
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('')
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('')
+
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const navigation = useAppNavigation()
 
@@ -30,27 +36,52 @@ export default function RegisterScreen() {
   }
   
   const requestRegister = () => {
+    setIsLoading(true)
+
     serverContext.register(
       username, email, password1, password2,
       () => {
-        console.log('register success')
-
         serverContext.login(
           username, password1,
           (access, refresh, user_id) => {
+            setIsLoading(false)
             dispathToHome()
           },
           (error) => {
-            console.log(error)
+            setIsLoading(false)
     
+            console.log(error)
+
             // TODO do something when login failed
           },
         )
       },
       (error) => {
-        console.log(error)
+        setIsLoading(false)
 
-        // TODO do something when register failed
+        if (error.hasOwnProperty('username')) {
+          setUsernameErrorMessage(error.username)
+        } else {
+          setUsernameErrorMessage('')
+        }
+       
+        if (error.hasOwnProperty('email')) {
+          setEmailErrorMessage(error.email)
+        } else {
+          setEmailErrorMessage('')
+        }
+
+        if (error.hasOwnProperty('password1')) {
+          setPasswordErrorMessage(error.password1)
+        }
+
+        if (error.hasOwnProperty('password')) {
+          setPasswordErrorMessage(error.password)
+        }
+
+        if (!error.hasOwnProperty('password') && !error.hasOwnProperty('password1')) {
+          setPasswordErrorMessage('')
+        }
       },
     )
   }
@@ -83,6 +114,12 @@ export default function RegisterScreen() {
           autoFocus
         />
 
+        {
+          usernameErrorMessage !== '' ? (
+            <Text style={styles.errorMessage}>{usernameErrorMessage}</Text>
+          ) : null
+        }
+
         <TextInput
           style={styles.viewContainer}
           onChangeText={setEmail}
@@ -90,6 +127,12 @@ export default function RegisterScreen() {
           placeholder="E-mail"
         />
 
+        {
+          emailErrorMessage !== '' ? (
+            <Text style={styles.errorMessage}>{emailErrorMessage}</Text>
+          ) : null
+        }
+        
         <TextInput
           style={styles.viewContainer}
           onChangeText={setPassword1}
@@ -106,6 +149,12 @@ export default function RegisterScreen() {
           secureTextEntry={true}
         />
 
+        {
+          passwordErrorMessage !== '' ? (
+            <Text style={styles.errorMessage}>{passwordErrorMessage}</Text>
+          ) : null
+        }
+        
         <TouchableHighlight
           style={[
             styles.viewContainer,
@@ -118,10 +167,18 @@ export default function RegisterScreen() {
           ]}
           underlayColor={Colors.loginBtnUnderlay}
           onPress={() => {
-            requestRegister()
+            if (!isLoading) {
+              requestRegister()
+            }
           }}
         >
-          <Text style={{ color: 'white' }}>Register</Text>
+          {
+            !isLoading ? (
+              <Text style={{ color: 'white' }}>Register</Text>
+            ) : (
+              <ActivityIndicator color='white' />
+            )
+          }
         </TouchableHighlight>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -146,4 +203,9 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 16,
   },
+  errorMessage: {
+    minHeight: 24,
+    color: 'red',
+    paddingStart: 16,
+  }
 })

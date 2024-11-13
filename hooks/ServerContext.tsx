@@ -9,7 +9,7 @@ export interface ServerContextType {
     password2: string,
     onSuccess: () => void,
     onFailed: (
-      error: string
+      error: JSON
     ) => void,
   ) => void
   login: (
@@ -21,7 +21,7 @@ export interface ServerContextType {
       user_id: string,
     ) => void,
     onFailed: (
-      error: string
+      error: JSON
     ) => void,
   ) => void
 }
@@ -39,7 +39,9 @@ export function ServerProvider({ children }: ServerProviderProps) {
     password1: string,
     password2: string,
     onSuccess: () => void,
-    onFailed: (error: string) => void,
+    onFailed: (
+      error: JSON
+    ) => void,
   ) => {
     await fetch(URLS.BASE_URL + URLS.REGISTER, {
       method: 'POST',
@@ -56,7 +58,11 @@ export function ServerProvider({ children }: ServerProviderProps) {
     })
     .then(response => response.json())
     .then(json => {
-      onSuccess()
+      if (json.hasOwnProperty('username')) {
+        onSuccess()
+      } else {
+        onFailed(json)
+      }
     })
     .catch(error => {
       onFailed(error)
@@ -71,7 +77,9 @@ export function ServerProvider({ children }: ServerProviderProps) {
       refresh: string,
       user_id: string,
     ) => void,
-    onFailed: (error: string) => void,
+    onFailed: (
+      error: JSON
+    ) => void,
   ) => {
     await fetch(URLS.BASE_URL + URLS.TOKEN, {
       method: 'POST',
@@ -86,11 +94,15 @@ export function ServerProvider({ children }: ServerProviderProps) {
     })
     .then(response => response.json())
     .then(json => {
-      const access = json.access
-      const refresh = json.refresh
-      const user_id = json.user_id
+      if (json.hasOwnProperty('access')) {
+        const access = json.access
+        const refresh = json.refresh
+        const user_id = json.user_id
 
-      onSuccess(access, refresh, user_id)
+        onSuccess(access, refresh, user_id)
+      } else {
+        onFailed(json)
+      }
     })
     .catch(error => {
       onFailed(error)
