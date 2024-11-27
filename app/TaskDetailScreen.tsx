@@ -134,7 +134,7 @@ export default function TaskDetailScreen() {
         <View
           style={{
             flex: 1,
-            marginVertical: 8,
+            marginTop: 8,
           }}
         >
           <SubTasksScreen parent_id={task.id} />
