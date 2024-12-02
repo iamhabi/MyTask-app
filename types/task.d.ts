@@ -3,7 +3,7 @@ export type Task = {
   parent_id: string | undefined
   title: string
   description: string | undefined
-  completed: boolean
+  is_done: boolean
   dueDate: Date | undefined
   created: Date
 }
