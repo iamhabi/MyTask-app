@@ -66,7 +66,7 @@ export default function TaskDetailScreen() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              deleteTask(task.id)
+              deleteTask(task.uuid)
 
               navigation.goBack()
             }}
@@ -137,7 +137,7 @@ export default function TaskDetailScreen() {
             marginTop: 8,
           }}
         >
-          <SubTasksScreen parent_id={task.id} />
+          <SubTasksScreen parent_id={task.uuid} />
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

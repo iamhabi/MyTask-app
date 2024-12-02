@@ -34,7 +34,7 @@ export default function HomeScreen() {
       <FlatList
         style={{ flex: 1 }}
         data={
-          tasks.filter(task => task.parent_id === undefined)
+          tasks.filter(task => task.parent_uuid === undefined)
         }
         renderItem={(item) => 
           <TaskItem
@@ -46,7 +46,7 @@ export default function HomeScreen() {
             }}
             onDelete={(deletedTask) => {
               deleteTask(
-                deletedTask.id,
+                deletedTask.uuid,
                 () => {
                   // Task deleted
                 },

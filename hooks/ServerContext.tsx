@@ -2,6 +2,7 @@ import { createContext, ReactNode, useContext, useState } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URLS } from "@/constants/urls"
 import { Task } from "@/types/task";
+import HttpStatusCode from "@/constants/HttpStatusCode";
 
 export interface ServerContextType {
   tasks: Task[]
@@ -171,9 +172,13 @@ export function ServerProvider({ children }: ServerProviderProps) {
     })
     .then(response => response.json())
     .then(json => {
-      setTasks(json as Task[])
+      if (json['response'] === HttpStatusCode.OK) {
+        setTasks(json['tasks'] as Task[])
 
-      onSuccess()
+        onSuccess()
+      } else {
+        onFailed('Failed to get tasks')
+      }
     })
     .catch(error => {
       onFailed(error)
@@ -202,27 +207,31 @@ export function ServerProvider({ children }: ServerProviderProps) {
         'user': user_id,
       },
       body: JSON.stringify({
-        'parent_uuid': parent_id ?? "",
+        'parent_uuid': parent_id ?? null,
         'title': title,
-        'description': description ?? "",
-        'due_date': dueDate ?? "",
+        'description': description ?? null,
+        'due_date': dueDate ?? null,
       })
     })
     .then(response => response.json())
     .then(json => {
-      const newTask: Task = {
-        id: json['pk'],
-        parent_id: parent_id,
-        title: title,
-        description: description,
-        is_done: false,
-        dueDate: dueDate,
-        created: json['created']
+      if (json['response'] === HttpStatusCode.CREATED) {
+        const newTask: Task = {
+          uuid: json['task']['pk'],
+          parent_uuid: parent_id,
+          title: title,
+          description: description,
+          is_done: false,
+          dueDate: dueDate,
+          created: json['created']
+        }
+  
+        setTasks([...tasks, newTask])
+  
+        onSuccess()
+      } else {
+        onFailed('Failed to create task')
       }
-
-      setTasks([...tasks, newTask])
-
-      onSuccess()
     })
     .catch(error => {
       onFailed(error)

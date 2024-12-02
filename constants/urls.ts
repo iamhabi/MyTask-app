@@ -1,5 +1,5 @@
 export const URLS = {
-  BASE_URL: 'http://121.159.147.20:8765/api/',
+  BASE_URL: 'http://localhost:8765/api/',
   ACCOUNT: 'account/',
   REGISTER: 'account/register/',
   DELETE: 'account/delete/',

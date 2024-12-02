@@ -29,7 +29,7 @@ export default function TaskItem({ task, onClick, onDelete }: Props) {
           fillColor={Colors.primary}
           onPress={(isChecked) => {
             setIsChecked(isChecked)
-            toggleTask(task.id)
+            toggleTask(task.uuid)
           }}
         />
 

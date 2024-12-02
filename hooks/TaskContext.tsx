@@ -33,11 +33,11 @@ export function TaskProvider({ children }: TaskProviderProps) {
     dueDate: Date | undefined
   ) => {
     const newTask: Task = {
-      id: uuidv4(),
-      parent_id: parent_id,
+      uuid: uuidv4(),
+      parent_uuid: parent_id,
       title: title,
       description: description,
-      completed: false,
+      is_done: false,
       dueDate: dueDate,
       created: new Date()
     }
@@ -47,18 +47,18 @@ export function TaskProvider({ children }: TaskProviderProps) {
 
   const toggleTask = (id: string) => {
     setTasks(tasks.map(task =>
-      task.id === id ? { ...task, completed: !task.completed } : task
+      task.uuid === id ? { ...task, is_done: !task.is_done } : task
     ))
   }
 
   const updateTask = (newTask: Task) => {
     setTasks(tasks.map(task =>
-      task.id === newTask.id ? newTask : task
+      task.uuid === newTask.uuid ? newTask : task
     ))
   }
 
   const deleteTask = (id: string) => {
-    setTasks(tasks.filter(task => task.id !== id))
+    setTasks(tasks.filter(task => task.uuid !== id))
   }
 
   const value: TaskContextType = {
