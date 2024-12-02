@@ -259,7 +259,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
   }
 
   const deleteTask = async (
-    id: string,
+    uuid: string,
     onSuccess: () => void,
     onFailed: (
       error: string
@@ -268,7 +268,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     let access = await AsyncStorage.getItem('access') ?? ""
     let user_id = await AsyncStorage.getItem('user_id') ?? ""
 
-    fetch(`${URLS.BASE_URL}${URLS.TASKS}${user_id}/`, {
+    fetch(`${URLS.BASE_URL}${URLS.TASKS}${uuid}/`, {
       method: 'DELETE',
       headers: {
         'Accept': '*/*',
@@ -277,13 +277,15 @@ export function ServerProvider({ children }: ServerProviderProps) {
         'user': user_id,
       }
     })
-    .then(response => response.json)
+    .then(response => response.json())
     .then(json => {
-      console.log(json)
+      if (json['response'] == HttpStatusCode.OK) {
+        setTasks(tasks.filter(task => task.uuid !== uuid))
 
-      // setTasks(tasks.filter(task => task.id !== id))
-
-      onSuccess()
+        onSuccess()
+      } else {
+        onFailed('Failed to delete task')
+      }
     })
     .catch((error) => {
       onFailed(error)
