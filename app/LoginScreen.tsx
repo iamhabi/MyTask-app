@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Keyboard, StyleSheet, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View, Pressable, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-
 import { useAppNavigation } from '@/types/navigation';
 import { ROUTES } from "@/constants/routes";
 import { Colors } from "@/constants/Colors";
 import { useServerContext } from "@/hooks/ServerContext";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const navigation = useAppNavigation()
@@ -38,6 +38,14 @@ export default function LoginScreen() {
     serverContext.login(
       username, password,
       (access, refresh, user_id) => {
+        try {
+          AsyncStorage.setItem('access', access)
+          AsyncStorage.setItem('refresh', refresh)
+          AsyncStorage.setItem('user_id', user_id)
+        } catch (error) {
+
+        }
+
         setIsLoading(false)
 
         dispathToHome()
@@ -47,6 +55,8 @@ export default function LoginScreen() {
 
         if (error.hasOwnProperty('detail')) {
           setErrorMessage(error.detail)
+        } else {
+          setErrorMessage("Error")
         }
       },
     )
