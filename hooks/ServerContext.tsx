@@ -1,7 +1,10 @@
+import { createContext, ReactNode, useContext, useState } from "react"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URLS } from "@/constants/urls"
-import { createContext, ReactNode, useContext } from "react"
+import { Task } from "@/types/task";
 
 export interface ServerContextType {
+  tasks: Task[]
   register: (
     uesrname: string,
     email: string,
@@ -24,6 +27,43 @@ export interface ServerContextType {
       error: JSON
     ) => void,
   ) => void
+  getTasks:(
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void,
+  ) => void
+  addTask: (
+    parent_id: string | undefined,
+    title: string,
+    description: string | undefined,
+    dueDate: Date | undefined,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => void
+  toggleTask: (
+    id: string,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => void
+  updateTask: (
+    newTask: Task,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => void
+  deleteTask: (
+    id: string,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => void
 }
 
 const ServerContext = createContext<ServerContextType | undefined>(undefined)
@@ -33,6 +73,8 @@ interface ServerProviderProps {
 }
 
 export function ServerProvider({ children }: ServerProviderProps) {
+  const [tasks, setTasks] = useState<Task[]>([])
+
   const register = async (
     uesrname: string,
     email: string,
@@ -46,7 +88,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     await fetch(URLS.BASE_URL + URLS.REGISTER, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -84,7 +126,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     await fetch(URLS.BASE_URL + URLS.TOKEN, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -109,9 +151,145 @@ export function ServerProvider({ children }: ServerProviderProps) {
     })
   }
 
+  const getTasks = async (
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void,
+  ) => {
+    let access = await AsyncStorage.getItem('access') ?? ""
+    let user_id = await AsyncStorage.getItem('user_id') ?? ""
+
+    await fetch(`${URLS.BASE_URL}${URLS.TASKS}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer  ' + access,
+        'user': user_id
+      }
+    })
+    .then(response => response.json())
+    .then(json => {
+      setTasks(json as Task[])
+
+      onSuccess()
+    })
+    .catch(error => {
+      onFailed(error)
+    })
+  }
+
+  const addTask = async (
+    parent_id: string | undefined,
+    title: string,
+    description: string | undefined,
+    dueDate: Date | undefined,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => {
+    let access = await AsyncStorage.getItem('access') ?? ""
+    let user_id = await AsyncStorage.getItem('user_id') ?? ""
+
+    await fetch(`${URLS.BASE_URL}${URLS.TASKS}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer  ' + access,
+        'user': user_id,
+      },
+      body: JSON.stringify({
+        'parent_uuid': parent_id ?? "",
+        'title': title,
+        'description': description ?? "",
+        'due_date': dueDate ?? "",
+      })
+    })
+    .then(response => response.json())
+    .then(json => {
+      const newTask: Task = {
+        id: json['pk'],
+        parent_id: parent_id,
+        title: title,
+        description: description,
+        is_done: false,
+        dueDate: dueDate,
+        created: json['created']
+      }
+
+      setTasks([...tasks, newTask])
+
+      onSuccess()
+    })
+    .catch(error => {
+      onFailed(error)
+    })
+  }
+
+  const toggleTask = async (
+    id: string,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => {
+
+  }
+
+  const updateTask = async (
+    newTask: Task,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => {
+
+  }
+
+  const deleteTask = async (
+    id: string,
+    onSuccess: () => void,
+    onFailed: (
+      error: string
+    ) => void
+  ) => {
+    let access = await AsyncStorage.getItem('access') ?? ""
+    let user_id = await AsyncStorage.getItem('user_id') ?? ""
+
+    fetch(`${URLS.BASE_URL}${URLS.TASKS}${user_id}/`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': '*/*',
+        'Content-Type': 'text/plain',
+        'Authorization': 'Bearer  ' + access,
+        'user': user_id,
+      }
+    })
+    .then(response => response.json)
+    .then(json => {
+      console.log(json)
+
+      // setTasks(tasks.filter(task => task.id !== id))
+
+      onSuccess()
+    })
+    .catch((error) => {
+      onFailed(error)
+    })
+  }
+
   const value: ServerContextType = {
+    tasks,
     register,
-    login
+    login,
+    getTasks,
+    addTask,
+    toggleTask,
+    updateTask,
+    deleteTask
   }
 
   return (
