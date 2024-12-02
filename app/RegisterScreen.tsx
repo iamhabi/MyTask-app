@@ -7,6 +7,7 @@ import { Colors } from "@/constants/Colors";
 import { useServerContext } from "@/hooks/ServerContext";
 import { CommonActions } from "@react-navigation/native";
 import { ROUTES } from "@/constants/routes";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState<string>('')
@@ -44,7 +45,16 @@ export default function RegisterScreen() {
         serverContext.login(
           username, password1,
           (access, refresh, user_id) => {
+            try {
+              AsyncStorage.setItem('access', access)
+              AsyncStorage.setItem('refresh', refresh)
+              AsyncStorage.setItem('user_id', user_id)
+            } catch (error) {
+    
+            }
+            
             setIsLoading(false)
+
             dispathToHome()
           },
           (error) => {
