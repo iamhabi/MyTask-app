@@ -44,13 +44,6 @@ export interface ServerContextType {
       error: string
     ) => void
   ) => void
-  toggleTask: (
-    id: string,
-    onSuccess: () => void,
-    onFailed: (
-      error: string
-    ) => void
-  ) => void
   updateTask: (
     newTask: Task,
     onSuccess: () => void,
@@ -238,24 +231,37 @@ export function ServerProvider({ children }: ServerProviderProps) {
     })
   }
 
-  const toggleTask = async (
-    id: string,
-    onSuccess: () => void,
-    onFailed: (
-      error: string
-    ) => void
-  ) => {
-
-  }
-
   const updateTask = async (
-    newTask: Task,
+    task: Task,
     onSuccess: () => void,
     onFailed: (
       error: string
     ) => void
   ) => {
+    let access = await AsyncStorage.getItem('access') ?? ""
+    let user_id = await AsyncStorage.getItem('user_id') ?? ""
 
+    await fetch(`${URLS.BASE_URL}${URLS.TASKS}${task.uuid}/`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer  ' + access,
+        'user': user_id,
+      },
+      body: JSON.stringify(task)
+    })
+    .then(response => response.json())
+    .then(json => {
+      if (json['response'] === HttpStatusCode.OK) {
+        onSuccess()
+      } else {
+        onFailed('Failed to update task')
+      }
+    })
+    .catch((error) => {
+      onFailed(error)
+    })
   }
 
   const deleteTask = async (
@@ -271,8 +277,8 @@ export function ServerProvider({ children }: ServerProviderProps) {
     fetch(`${URLS.BASE_URL}${URLS.TASKS}${uuid}/`, {
       method: 'DELETE',
       headers: {
-        'Accept': '*/*',
-        'Content-Type': 'text/plain',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer  ' + access,
         'user': user_id,
       }
@@ -298,7 +304,6 @@ export function ServerProvider({ children }: ServerProviderProps) {
     login,
     getTasks,
     addTask,
-    toggleTask,
     updateTask,
     deleteTask
   }
