@@ -209,16 +209,8 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(response => response.json())
     .then(json => {
       if (json['response'] === HttpStatusCode.CREATED) {
-        const newTask: Task = {
-          id: json['task']['pk'],
-          parent_id: parent_id,
-          title: title,
-          description: description,
-          is_done: false,
-          dueDate: dueDate,
-          created: json['created']
-        }
-  
+        const newTask: Task = json['task'] as Task
+
         setTasks([...tasks, newTask])
   
         onSuccess()
