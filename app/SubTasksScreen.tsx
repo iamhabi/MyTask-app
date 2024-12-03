@@ -1,24 +1,22 @@
-import { useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useAppNavigation } from '@/types/navigation';
 
 import TaskInputField from '@/components/TaskInputField';
 import TaskItem from "@/components/TaskItem";
 
-import { Task } from "@/types/task";
 import { ROUTES } from "@/constants/routes";
-import { useTaskContext } from "@/hooks/TaskContext";
+import { useServerContext } from "@/hooks/ServerContext";
 
 export type Props = {
-  parent_id: string | undefined
+  parent_uuid: string | undefined
 }
 
-export default function SubTasksScreen({ parent_id }: Props) {
+export default function SubTasksScreen({ parent_uuid }: Props) {
   const navigation = useAppNavigation()
 
-  const { tasks, addTask, deleteTask } = useTaskContext()
+  const { tasks, addTask } = useServerContext()
 
-  const subTasks = tasks.filter(task => task.parent_uuid === parent_id)
+  const subTasks = tasks.filter(task => task.parent_uuid === parent_uuid)
 
   const isEmpty = subTasks.length === 0
 
@@ -37,9 +35,6 @@ export default function SubTasksScreen({ parent_id }: Props) {
                     taskJSON: JSON.stringify(task)
                   })
                 }}
-                onDelete={(deletedTask: Task) => {
-                  deleteTask(deletedTask.uuid)
-                }}
               />
             }
           />
@@ -54,7 +49,15 @@ export default function SubTasksScreen({ parent_id }: Props) {
       
       <TaskInputField
         onCreate={(title, description, dueDate) => {
-          addTask(parent_id, title, description, dueDate)
+          addTask(
+            parent_uuid, title, description, dueDate,
+            () => {
+              // Task added
+            },
+            (error) => {
+              console.error(error)
+            }
+          )
         }}
       />
     </View>

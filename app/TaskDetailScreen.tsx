@@ -137,7 +137,7 @@ export default function TaskDetailScreen() {
             marginTop: 8,
           }}
         >
-          <SubTasksScreen parent_id={task.uuid} />
+          <SubTasksScreen parent_uuid={task.uuid} />
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

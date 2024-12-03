@@ -35,7 +35,7 @@ export interface ServerContextType {
     ) => void,
   ) => void
   addTask: (
-    parent_id: string | undefined,
+    parent_uuid: string | undefined,
     title: string,
     description: string | undefined,
     dueDate: Date | undefined,
@@ -179,7 +179,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
   }
 
   const addTask = async (
-    parent_id: string | undefined,
+    parent_uuid: string | undefined,
     title: string,
     description: string | undefined,
     dueDate: Date | undefined,
@@ -200,7 +200,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
         'user': user_id,
       },
       body: JSON.stringify({
-        'parent_uuid': parent_id ?? null,
+        'parent_uuid': parent_uuid ?? null,
         'title': title,
         'description': description ?? null,
         'due_date': dueDate ?? null,
@@ -211,7 +211,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
       if (json['response'] === HttpStatusCode.CREATED) {
         const newTask: Task = {
           uuid: json['task']['pk'],
-          parent_uuid: parent_id,
+          parent_uuid: parent_uuid,
           title: title,
           description: description,
           is_done: false,

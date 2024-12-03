@@ -6,18 +6,16 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Task } from "@/types/task";
 import { Colors } from "@/constants/Colors";
 import { useServerContext } from "@/hooks/ServerContext";
-import iconSet from "@expo/vector-icons/build/Fontisto";
 
 export type Props = {
   task: Task
   onClick: (task: Task) => void
-  onDelete: (task: Task) => void
 }
 
-export default function TaskItem({ task, onClick, onDelete }: Props) {
+export default function TaskItem({ task, onClick }: Props) {
   const [isChecked, setIsChecked] = useState(false);
 
-  const { updateTask } = useServerContext()
+  const { updateTask, deleteTask } = useServerContext()
   
   return (
     <View style={styles.container}>
@@ -62,7 +60,15 @@ export default function TaskItem({ task, onClick, onDelete }: Props) {
             </Text>
 
             <Pressable onPress={() => {
-              onDelete(task)
+              deleteTask(
+                task.uuid,
+                () => {
+                  
+                },
+                (error) => {
+
+                }
+              )
             }}>
               <MaterialIcons
                 name="delete"

@@ -12,7 +12,7 @@ export default function HomeScreen() {
   const navigation = useAppNavigation()
   
   const [isUp, setUp] = useState(false)
-  const { tasks, getTasks, addTask, deleteTask } = useServerContext()
+  const { tasks, getTasks, addTask } = useServerContext()
 
   useEffect(() => {
     if (!isUp) {
@@ -34,7 +34,7 @@ export default function HomeScreen() {
       <FlatList
         style={{ flex: 1 }}
         data={
-          tasks.filter(task => task.parent_uuid === undefined)
+          tasks.filter(task => task.parent_uuid === null)
         }
         renderItem={(item) => 
           <TaskItem
@@ -43,17 +43,6 @@ export default function HomeScreen() {
               navigation.navigate(ROUTES.DETAIL, {
                 taskJSON: JSON.stringify(task)
               })
-            }}
-            onDelete={(deletedTask) => {
-              deleteTask(
-                deletedTask.uuid,
-                () => {
-                  // Task deleted
-                },
-                (error) => {
-
-                }
-              )
             }}
           />
         }
