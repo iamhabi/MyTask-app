@@ -166,7 +166,25 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(response => response.json())
     .then(json => {
       if (json['response'] === HttpStatusCode.OK) {
-        setTasks(json['tasks'] as Task[])
+        let tasksJson = json['tasks']
+
+        for (let i in tasksJson) {
+          let taskJson = tasksJson[i]
+
+          const task: Task = {
+            id: taskJson['id'],
+            parent_id: taskJson['parent_id'] ?? undefined,
+            title: taskJson['title'],
+            description: taskJson['description'] ?? undefined,
+            is_done: taskJson['is_done'],
+            dueDate: taskJson['due_date'] ?? undefined,
+            created: taskJson['created']
+          }
+
+          setTasks([...tasks, task])
+        }
+
+        // setTasks(json['tasks'] as Task[])
 
         onSuccess()
       } else {
@@ -209,7 +227,17 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(response => response.json())
     .then(json => {
       if (json['response'] === HttpStatusCode.CREATED) {
-        const newTask: Task = json['task'] as Task
+        let taskJson = json['task']
+
+        const newTask: Task = {
+          id: taskJson['id'],
+          parent_id: taskJson['parent_id'] ?? undefined,
+          title: taskJson['title'],
+          description: taskJson['description'] ?? undefined,
+          is_done: taskJson['is_done'],
+          dueDate: taskJson['due_date'] ?? undefined,
+          created: taskJson['created']
+        }
 
         setTasks([...tasks, newTask])
   
