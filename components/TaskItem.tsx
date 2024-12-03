@@ -61,7 +61,7 @@ export default function TaskItem({ task, onClick }: Props) {
 
             <Pressable onPress={() => {
               deleteTask(
-                task.uuid,
+                task.id,
                 () => {
                   
                 },

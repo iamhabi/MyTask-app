@@ -8,15 +8,15 @@ import { ROUTES } from "@/constants/routes";
 import { useServerContext } from "@/hooks/ServerContext";
 
 export type Props = {
-  parent_uuid: string | undefined
+  parent_id: string | undefined
 }
 
-export default function SubTasksScreen({ parent_uuid }: Props) {
+export default function SubTasksScreen({ parent_id }: Props) {
   const navigation = useAppNavigation()
 
   const { tasks, addTask } = useServerContext()
 
-  const subTasks = tasks.filter(task => task.parent_uuid === parent_uuid)
+  const subTasks = tasks.filter(task => task.parent_id === parent_id)
 
   const isEmpty = subTasks.length === 0
 
@@ -50,7 +50,7 @@ export default function SubTasksScreen({ parent_uuid }: Props) {
       <TaskInputField
         onCreate={(title, description, dueDate) => {
           addTask(
-            parent_uuid, title, description, dueDate,
+            parent_id, title, description, dueDate,
             () => {
               // Task added
             },

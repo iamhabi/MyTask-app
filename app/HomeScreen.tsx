@@ -34,7 +34,7 @@ export default function HomeScreen() {
       <FlatList
         style={{ flex: 1 }}
         data={
-          tasks.filter(task => task.parent_uuid === null)
+          tasks.filter(task => task.parent_id === null)
         }
         renderItem={(item) => 
           <TaskItem

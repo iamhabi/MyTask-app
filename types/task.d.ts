@@ -1,6 +1,6 @@
 export type Task = {
-  uuid: string
-  parent_uuid: string | undefined
+  id: string
+  parent_id: string | undefined
   title: string
   description: string | undefined
   is_done: boolean

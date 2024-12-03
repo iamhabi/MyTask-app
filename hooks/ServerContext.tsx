@@ -35,7 +35,7 @@ export interface ServerContextType {
     ) => void,
   ) => void
   addTask: (
-    parent_uuid: string | undefined,
+    parent_id: string | undefined,
     title: string,
     description: string | undefined,
     dueDate: Date | undefined,
@@ -179,7 +179,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
   }
 
   const addTask = async (
-    parent_uuid: string | undefined,
+    parent_id: string | undefined,
     title: string,
     description: string | undefined,
     dueDate: Date | undefined,
@@ -200,7 +200,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
         'user': user_id,
       },
       body: JSON.stringify({
-        'parent_uuid': parent_uuid ?? null,
+        'parent_id': parent_id ?? null,
         'title': title,
         'description': description ?? null,
         'due_date': dueDate ?? null,
@@ -210,8 +210,8 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(json => {
       if (json['response'] === HttpStatusCode.CREATED) {
         const newTask: Task = {
-          uuid: json['task']['pk'],
-          parent_uuid: parent_uuid,
+          id: json['task']['pk'],
+          parent_id: parent_id,
           title: title,
           description: description,
           is_done: false,
@@ -241,7 +241,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     let access = await AsyncStorage.getItem('access') ?? ""
     let user_id = await AsyncStorage.getItem('user_id') ?? ""
 
-    await fetch(`${URLS.BASE_URL}${URLS.TASKS}${task.uuid}/`, {
+    await fetch(`${URLS.BASE_URL}${URLS.TASKS}${task.id}/`, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -265,7 +265,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
   }
 
   const deleteTask = async (
-    uuid: string,
+    id: string,
     onSuccess: () => void,
     onFailed: (
       error: string
@@ -274,7 +274,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     let access = await AsyncStorage.getItem('access') ?? ""
     let user_id = await AsyncStorage.getItem('user_id') ?? ""
 
-    fetch(`${URLS.BASE_URL}${URLS.TASKS}${uuid}/`, {
+    fetch(`${URLS.BASE_URL}${URLS.TASKS}${id}/`, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
@@ -286,7 +286,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(response => response.json())
     .then(json => {
       if (json['response'] == HttpStatusCode.OK) {
-        setTasks(tasks.filter(task => task.uuid !== uuid))
+        setTasks(tasks.filter(task => task.id !== id))
 
         onSuccess()
       } else {
