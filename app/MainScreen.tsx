@@ -11,7 +11,7 @@ export default function MainScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <Text>My todo</Text>
+        <Text>MyTask</Text>
       </View>
       <TouchableHighlight
         style={styles.buttonContainer}
