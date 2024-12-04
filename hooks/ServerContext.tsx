@@ -274,6 +274,20 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(response => response.json())
     .then(json => {
       if (json['response'] === HttpStatusCode.OK) {
+        let taskJson = json['task']
+
+        const updatedTask: Task = {
+          id: taskJson['id'],
+          parent_id: taskJson['parent_id'] ?? undefined,
+          title: taskJson['title'],
+          description: taskJson['description'] ?? undefined,
+          is_done: taskJson['is_done'],
+          dueDate: taskJson['due_date'] ?? undefined,
+          created: taskJson['created']
+        }
+
+        setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
+
         onSuccess()
       } else {
         onFailed('Failed to update task')

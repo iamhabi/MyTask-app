@@ -11,7 +11,7 @@ import { DetailNavigationProp, DetailRouteProp } from "@/types/navigation";
 
 import { Task } from "@/types/task";
 import { Colors } from "@/constants/Colors";
-import { useTaskContext } from "@/hooks/TaskContext";
+import { useServerContext } from "@/hooks/ServerContext";
 
 export default function TaskDetailScreen() {
   const navigation = useNavigation<DetailNavigationProp>()
@@ -19,7 +19,7 @@ export default function TaskDetailScreen() {
   const { taskJSON } = route.params
   const [task, _] = useState<Task>(JSON.parse(taskJSON) as Task)
 
-  const { updateTask, deleteTask } = useTaskContext()
+  const { updateTask, deleteTask } = useServerContext()
 
   const [title, setTitle] = useState<string>(task.title)
   const [description, setDescription] = useState<string | undefined>(task.description !== undefined ? task.description : undefined)
@@ -49,11 +49,27 @@ export default function TaskDetailScreen() {
               <Pressable
                 style={styles.button}
                 onPress={() => {
-                  task.title = title
-                  task.description = description
-                  task.dueDate = dueDate
+                  const updatedTask: Task = {
+                    id: task.id,
+                    parent_id: task.parent_id,
+                    title: title,
+                    description: description,
+                    is_done: task.is_done,
+                    dueDate: dueDate,
+                    created: task.created
+                  }
 
-                  updateTask(task)
+                  updateTask(
+                    updatedTask,
+                    () => {
+                      task.title = title
+                      task.description = description
+                      task.dueDate = dueDate
+                    },
+                    (error) => {
+
+                    }
+                  )
 
                   Keyboard.dismiss()
                 }}
@@ -66,7 +82,15 @@ export default function TaskDetailScreen() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              deleteTask(task.id)
+              deleteTask(
+                task.id,
+                () => {
+
+                },
+                (error) => {
+
+                }
+              )
 
               navigation.goBack()
             }}
