@@ -81,10 +81,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
   ) => {
     await fetch(URLS.BASE_URL + URLS.REGISTER, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: getHeader(),
       body: JSON.stringify({
         username: uesrname,
         email: email,
@@ -119,10 +116,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
   ) => {
     await fetch(URLS.BASE_URL + URLS.TOKEN, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: getHeader(),
       body: JSON.stringify({
         username: username,
         password: password,
@@ -151,17 +145,9 @@ export function ServerProvider({ children }: ServerProviderProps) {
       error: string
     ) => void,
   ) => {
-    let access = await AsyncStorage.getItem('access') ?? ""
-    let user_id = await AsyncStorage.getItem('user_id') ?? ""
-
     await fetch(`${URLS.BASE_URL}${URLS.TASKS}`, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer  ' + access,
-        'user': user_id
-      }
+      headers: await getHeaderWithToken()
     })
     .then(response => response.json())
     .then(json => {
@@ -206,17 +192,9 @@ export function ServerProvider({ children }: ServerProviderProps) {
       error: string
     ) => void
   ) => {
-    let access = await AsyncStorage.getItem('access') ?? ""
-    let user_id = await AsyncStorage.getItem('user_id') ?? ""
-
     await fetch(`${URLS.BASE_URL}${URLS.TASKS}`, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer  ' + access,
-        'user': user_id,
-      },
+      headers: await getHeaderWithToken(),
       body: JSON.stringify({
         'parent_id': parent_id ?? null,
         'title': title,
@@ -258,17 +236,9 @@ export function ServerProvider({ children }: ServerProviderProps) {
       error: string
     ) => void
   ) => {
-    let access = await AsyncStorage.getItem('access') ?? ""
-    let user_id = await AsyncStorage.getItem('user_id') ?? ""
-
     await fetch(`${URLS.BASE_URL}${URLS.TASKS}${task.id}/`, {
       method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer  ' + access,
-        'user': user_id,
-      },
+      headers: await getHeaderWithToken(),
       body: JSON.stringify(task)
     })
     .then(response => response.json())
@@ -305,17 +275,9 @@ export function ServerProvider({ children }: ServerProviderProps) {
       error: string
     ) => void
   ) => {
-    let access = await AsyncStorage.getItem('access') ?? ""
-    let user_id = await AsyncStorage.getItem('user_id') ?? ""
-
     fetch(`${URLS.BASE_URL}${URLS.TASKS}${id}/`, {
       method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer  ' + access,
-        'user': user_id,
-      }
+      headers: await getHeaderWithToken()
     })
     .then(response => response.json())
     .then(json => {
@@ -357,4 +319,23 @@ export function useServerContext(): ServerContextType {
   }
 
   return context
+}
+
+function getHeader(): any {
+  return {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  }
+}
+
+async function getHeaderWithToken(): Promise<any> {
+  let header = getHeader()
+
+  let access = await AsyncStorage.getItem('access') ?? ""
+  let user_id = await AsyncStorage.getItem('user_id') ?? ""
+
+  header['Authorization'] = `Bearer  ${access}`
+  header['user'] = user_id
+
+  return header
 }
