@@ -29,7 +29,7 @@ export default function TaskItem({ task, onClick }: Props) {
           onPress={(isChecked) => {
             setIsChecked(isChecked)
             
-            task.is_done = isChecked
+            task.isDone = isChecked
 
             updateTask(
               task,

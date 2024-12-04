@@ -173,10 +173,10 @@ export function ServerProvider({ children }: ServerProviderProps) {
 
           const task: Task = {
             id: taskJson['id'],
-            parent_id: taskJson['parent_id'] ?? undefined,
+            parentId: taskJson['parent_id'] ?? undefined,
             title: taskJson['title'],
             description: taskJson['description'] ?? undefined,
-            is_done: taskJson['is_done'],
+            isDone: taskJson['is_done'],
             dueDate: taskJson['due_date'] ?? undefined,
             created: taskJson['created']
           }
@@ -231,10 +231,10 @@ export function ServerProvider({ children }: ServerProviderProps) {
 
         const newTask: Task = {
           id: taskJson['id'],
-          parent_id: taskJson['parent_id'] ?? undefined,
+          parentId: taskJson['parent_id'] ?? undefined,
           title: taskJson['title'],
           description: taskJson['description'] ?? undefined,
-          is_done: taskJson['is_done'],
+          isDone: taskJson['is_done'],
           dueDate: taskJson['due_date'] ?? undefined,
           created: taskJson['created']
         }
@@ -278,10 +278,10 @@ export function ServerProvider({ children }: ServerProviderProps) {
 
         const updatedTask: Task = {
           id: taskJson['id'],
-          parent_id: taskJson['parent_id'] ?? undefined,
+          parentId: taskJson['parent_id'] ?? undefined,
           title: taskJson['title'],
           description: taskJson['description'] ?? undefined,
-          is_done: taskJson['is_done'],
+          isDone: taskJson['is_done'],
           dueDate: taskJson['due_date'] ?? undefined,
           created: taskJson['created']
         }

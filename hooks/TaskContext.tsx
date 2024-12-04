@@ -34,10 +34,10 @@ export function TaskProvider({ children }: TaskProviderProps) {
   ) => {
     const newTask: Task = {
       id: uuidv4(),
-      parent_id: parent_id,
+      parentId: parent_id,
       title: title,
       description: description,
-      is_done: false,
+      isDone: false,
       dueDate: dueDate,
       created: new Date()
     }
@@ -47,7 +47,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
 
   const toggleTask = (id: string) => {
     setTasks(tasks.map(task =>
-      task.id === id ? { ...task, is_done: !task.is_done } : task
+      task.id === id ? { ...task, isDone: !task.isDone } : task
     ))
   }
 

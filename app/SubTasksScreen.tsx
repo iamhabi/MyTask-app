@@ -16,7 +16,7 @@ export default function SubTasksScreen({ parent_id }: Props) {
 
   const { tasks, addTask } = useServerContext()
 
-  const subTasks = tasks.filter(task => task.parent_id === parent_id)
+  const subTasks = tasks.filter(task => task.parentId === parent_id)
 
   const isEmpty = subTasks.length === 0
 

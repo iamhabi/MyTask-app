@@ -1,9 +1,9 @@
 export type Task = {
   id: string
-  parent_id: string | undefined
+  parentId: string | undefined
   title: string
   description: string | undefined
-  is_done: boolean
+  isDone: boolean
   dueDate: Date | undefined
   created: Date
 }

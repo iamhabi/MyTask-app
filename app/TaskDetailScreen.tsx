@@ -51,10 +51,10 @@ export default function TaskDetailScreen() {
                 onPress={() => {
                   const updatedTask: Task = {
                     id: task.id,
-                    parent_id: task.parent_id,
+                    parentId: task.parentId,
                     title: title,
                     description: description,
-                    is_done: task.is_done,
+                    isDone: task.isDone,
                     dueDate: dueDate,
                     created: task.created
                   }
