@@ -205,17 +205,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(response => response.json())
     .then(json => {
       if (json['response'] === HttpStatusCode.CREATED) {
-        let taskJson = json['task']
-
-        const newTask: Task = {
-          id: taskJson['id'],
-          parentId: taskJson['parent_id'] ?? undefined,
-          title: taskJson['title'],
-          description: taskJson['description'] ?? undefined,
-          isDone: taskJson['is_done'],
-          dueDate: taskJson['due_date'] ?? undefined,
-          created: taskJson['created']
-        }
+        const newTask: Task = createTaskFromJson(json['task'])
 
         setTasks([...tasks, newTask])
   
@@ -244,17 +234,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
     .then(response => response.json())
     .then(json => {
       if (json['response'] === HttpStatusCode.OK) {
-        let taskJson = json['task']
-
-        const updatedTask: Task = {
-          id: taskJson['id'],
-          parentId: taskJson['parent_id'] ?? undefined,
-          title: taskJson['title'],
-          description: taskJson['description'] ?? undefined,
-          isDone: taskJson['is_done'],
-          dueDate: taskJson['due_date'] ?? undefined,
-          created: taskJson['created']
-        }
+        const updatedTask: Task = createTaskFromJson(json['task'])
 
         setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task))
 
@@ -338,4 +318,16 @@ async function getHeaderWithToken(): Promise<any> {
   header['user'] = user_id
 
   return header
+}
+
+function createTaskFromJson(json: any): Task {
+  return {
+    id: json['id'],
+    parentId: json['parent_id'] ?? undefined,
+    title: json['title'],
+    description: json['description'] ?? undefined,
+    isDone: json['is_done'],
+    dueDate: json['due_date'] ?? undefined,
+    created: json['created']
+  }
 }
