@@ -85,14 +85,12 @@ export default function TaskDetailScreen() {
               deleteTask(
                 task.id,
                 () => {
-
+                  navigation.goBack()
                 },
                 (error) => {
 
                 }
               )
-
-              navigation.goBack()
             }}
           >
             <MaterialIcons
