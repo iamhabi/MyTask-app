@@ -35,7 +35,7 @@ export interface ServerContextType {
     ) => void,
   ) => void
   addTask: (
-    parent_id: string | undefined,
+    parentId: string | undefined,
     title: string,
     description: string | undefined,
     dueDate: Date | undefined,
@@ -183,7 +183,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
   }
 
   const addTask = async (
-    parent_id: string | undefined,
+    parentId: string | undefined,
     title: string,
     description: string | undefined,
     dueDate: Date | undefined,
@@ -196,7 +196,7 @@ export function ServerProvider({ children }: ServerProviderProps) {
       method: 'POST',
       headers: await getHeaderWithToken(),
       body: JSON.stringify({
-        'parent_id': parent_id ?? null,
+        'parent_id': parentId ?? null,
         'title': title,
         'description': description ?? null,
         'due_date': dueDate ?? null,
