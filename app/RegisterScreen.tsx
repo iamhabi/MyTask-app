@@ -69,24 +69,24 @@ export default function RegisterScreen() {
       (error) => {
         setIsLoading(false)
 
-        if (error.hasOwnProperty('username')) {
-          setUsernameErrorMessage(error.username)
+        if ('username' in error) {
+          setUsernameErrorMessage(error['username'] as string)
         } else {
           setUsernameErrorMessage('')
         }
        
-        if (error.hasOwnProperty('email')) {
-          setEmailErrorMessage(error.email)
+        if ('email' in error) {
+          setEmailErrorMessage(error['email'] as string)
         } else {
           setEmailErrorMessage('')
         }
 
-        if (error.hasOwnProperty('password1')) {
-          setPasswordErrorMessage(error.password1)
+        if ('password1' in error) {
+          setPasswordErrorMessage(error['password1'] as string)
         }
 
-        if (error.hasOwnProperty('password')) {
-          setPasswordErrorMessage(error.password)
+        if ('password' in error) {
+          setPasswordErrorMessage(error['password'] as string)
         }
 
         if (!error.hasOwnProperty('password') && !error.hasOwnProperty('password1')) {

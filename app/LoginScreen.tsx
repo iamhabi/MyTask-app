@@ -53,8 +53,8 @@ export default function LoginScreen() {
       (error) => {
         setIsLoading(false)
 
-        if (error.hasOwnProperty('detail')) {
-          setErrorMessage(error.detail)
+        if ('detail' in error) {
+          setErrorMessage(error['detail'] as string)
         } else {
           setErrorMessage("Error")
         }
